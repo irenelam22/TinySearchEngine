@@ -19,12 +19,6 @@
 #include "../libcs50/webpage.h"
 #include "../libcs50/memory.h"
 
-#ifdef DEBUG
-void debug(char* msg) { fprintf(stderr, "DEBUG: %s\n", msg); }
-#else
-void debug(char* msg) {}
-#endif
-
 bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth);
 void crawler(webpage_t* seedURL, char* pageDir, int maxDepth);
 char* pagefetcher(webpage_t *page);
@@ -56,10 +50,10 @@ int main(int argc, char* argv[])
 
 	webpage_t *web = webpage_new(urlcopy, 0, NULL); 
     if (!inputCheck(web, argv[2], atoi(argv[3]))) {
+        free(urlcopy);
         return 2;
     }
     crawler(web, argv[2], atoi(argv[3]));
-    webpage_delete(web);
     return 0;
 } 
 
@@ -77,10 +71,14 @@ bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth)
         fprintf(stderr, "pageDir is NULL\n");
         return false;
     }
-    if (opendir(pageDir) == NULL) {
+
+    DIR* dir = opendir(pageDir);
+    if (dir == NULL) {
         fprintf(stderr, "pageDir is not a valid directory\n");
         return false;
     }
+    free(dir);
+
     if (maxDepth < 0 || maxDepth > 10) {
         fprintf(stderr, "maxDepth must be within the range [0,10]\n");
         return false;
@@ -109,16 +107,13 @@ void crawler(webpage_t* seedURL, char* pageDir, int maxDepth)
         if (pagesaver(item, pageDir, id)) {
             id++;
         }
-        else {
-            break;
-        }
         
         if (webpage_getDepth(item) < maxDepth) {
             pagescanner(item, visited, bag, webpage_getDepth(item));
-            // currDepth = webpage_getDepth(item);
         }
+        webpage_delete(item);
     }
-    bag_delete(bag, webpage_delete);
+    bag_delete(bag, NULL);
     hashtable_delete(visited, NULL);
 }
 
@@ -130,7 +125,7 @@ char* pagefetcher(webpage_t *page)
 	}
 	else { // failed to fetch the page
 		fprintf(stderr, "failed to fetch %s\n", webpage_getHTML(page));
-		webpage_delete(page);
+		// webpage_delete(page);
 		return NULL;
 	}
 }
@@ -146,26 +141,19 @@ void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth)
         // Normalize next URL
         if (!NormalizeURL(next)) {
             fprintf(stderr, "Error normalizing next URL %s\n", next);
+            free(next);
             continue;
         }
         if (!IsInternalURL(next)) {
+            free(next);
             continue;
         }
         if (hashtable_insert(visited, next, &depth)) {
-            
-            // Making a copy on the heap
             char* urlcopy = assertp(malloc(strlen(next)+1), "url copy");
             strcpy(urlcopy, next);
 
             webpage_t *web = webpage_new(urlcopy, depth+1, NULL); 
             bag_insert(bag, web);
-            debug("adding into queue");
-
-            char* num = malloc(sizeof(webpage_getDepth(web)));
-            sprintf(num, "%d", webpage_getDepth(web));
-            debug("depth:");
-            debug(num);
-            free(num);
         }
         free(next);
     }
@@ -179,7 +167,6 @@ bool pagesaver(webpage_t *page, char* pageDir, int id)
     char* copy = malloc(strlen(pageDir)+1+sizeof(id));
     strcpy(copy, pageDir);
     strcat(copy, num);
-    debug(num);
 
     FILE *fp = fopen(copy, "w"); 
 	assertp(fp, "cannot open file for writing\n");
