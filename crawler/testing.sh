@@ -10,6 +10,9 @@
 mkdir -p ../garbage
 make
 
+echo "Integration testing for crawler module."
+echo "Please use -DTEST flag to see progress indicators."
+
 echo "Error-handling: Insufficient arguments"
 ./crawler https://www.cs.dartmouth.edu/~cs50/ ../garbage/ 
 if [ $? -ne 0 ]; then

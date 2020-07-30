@@ -34,11 +34,13 @@ char* pagefetcher(webpage_t *page);
 bool pagesaver(webpage_t *page, char* pageDir, int id);
 void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth);
 
-#ifdef DEBUG
-void print(char* input)
+#ifdef TEST
+void debug(char* input)
 {
-    printf("%s", input); 
+    printf("%s\n", input); 
 }
+#else 
+void debug(char* input) {}
 #endif
 
 /*
@@ -47,7 +49,8 @@ void print(char* input)
  * Input: FILE*, void*
  * Output: None (prints each webpage URL within the bag)
  */
-void bag_web_print(FILE *fp, void *item) {
+void bag_web_print(FILE *fp, void *item) 
+{
     webpage_t *web = (webpage_t*) item;
     fprintf(fp, "%s", webpage_getURL(web));
 }
@@ -185,7 +188,7 @@ char* pagefetcher(webpage_t *page)
 	}
 	else { 
         // failed to fetch the page
-		//fprintf(stderr, "failed to fetch %s\n", webpage_getHTML(page));
+		fprintf(stderr, "failed to fetch %s\n", webpage_getHTML(page));
 		webpage_delete(page);
 		return NULL;
 	}
@@ -244,6 +247,7 @@ bool pagesaver(webpage_t *page, char* pageDir, int id)
     // Allocate memory and copy
     char* num = malloc(sizeof(id)+1);
     sprintf(num, "%d", id);
+    debug(num);
     char* copy = malloc(strlen(pageDir)+1+sizeof(id));
     strcpy(copy, pageDir);
     strcat(copy, num);
@@ -252,6 +256,7 @@ bool pagesaver(webpage_t *page, char* pageDir, int id)
     FILE *fp = fopen(copy, "w"); 
 	assertp(fp, "cannot open file for writing\n");
 	fprintf(fp, "%s\n%d\n%s", webpage_getURL(page), webpage_getDepth(page), webpage_getHTML(page));
+    debug(webpage_getURL(page));
 
     // Maintaining logistics -- free and close files
 	fclose(fp);
