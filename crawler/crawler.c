@@ -1,6 +1,14 @@
 /**
  * crawler.c -- driver file for the crawler portion of the Tiny Search Engine
+ * The main objective of the 'crawler' is to crawl a website and retrieve webpages 
+ * beginning with a given URL. It parses through the initial webpage, 
+ * extracts embedded URLs and retrieves those pages, and crawls these pages 
+ * until there are no more pages to crawl or `maxDepth` is reached. Crawled URLs
+ * are further limited by those 'internal' to the designated CS50 server.
+ * When the crawler process is complete, the indexing of the documents begin.
  * Please see README.md for more details
+ * 
+ * Usage: ./crawler seedURL pageDirectory maxDepth
  * 
  * Irene Lam, July 26, 2020
  * Dartmouth CS50, Summer 2020
@@ -18,6 +26,7 @@
 #include "../libcs50/hashtable.h"
 #include "../libcs50/webpage.h"
 #include "../libcs50/memory.h"
+#include "../common/pagedir.h"
 
 bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth);
 void crawler(webpage_t* seedURL, char* pageDir, int maxDepth);
@@ -25,40 +34,70 @@ char* pagefetcher(webpage_t *page);
 bool pagesaver(webpage_t *page, char* pageDir, int id);
 void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth);
 
+#ifdef DEBUG
+void print(char* input)
+{
+    printf("%s", input); 
+}
+#endif
+
+/*
+ * bag_web_print: itemprint function to print each URL within the bag
+ * Used for debugging purposes
+ * Input: FILE*, void*
+ * Output: None (prints each webpage URL within the bag)
+ */
 void bag_web_print(FILE *fp, void *item) {
     webpage_t *web = (webpage_t*) item;
     fprintf(fp, "%s", webpage_getURL(web));
 }
 
+/**
+ * Main method for crawler
+ * 
+ * Input: seedURL, pageDirectory, maxDepth
+ * Output: integer (0 if successful, 1 if error)
+ */
 int main(int argc, char* argv[])
 {
+    // Error-handling: Ensuring number of arguments passed suffices
     if (argc < 4) {
         fprintf(stderr, "Insufficient number of arguments\n");
+        return 1;
     }
     if (argc > 4) {
         fprintf(stderr, "Too many arguments provided\n");
+        return 1;
     }
-    // Normalize seedURL
+    // Normalize seedURL and throws an error if URL cannot be normalized
     char* seedURL = argv[1];
     if (!NormalizeURL(seedURL)) {
         fprintf(stderr, "Error normalizing seedURL %s\n", seedURL);
         return 1;
     }
-    // Making a copy on the heap
+    // Making a copy of the seedURL on the heap
     char* urlcopy = assertp(malloc(strlen(seedURL)+1), "url copy");
     strcpy(urlcopy, seedURL);
 
+    // Check inputs (see inputCheck below for more details)
 	webpage_t *web = webpage_new(urlcopy, 0, NULL); 
     if (!inputCheck(web, argv[2], atoi(argv[3]))) {
         free(urlcopy);
         return 2;
     }
+
     crawler(web, argv[2], atoi(argv[3]));
     return 0;
 } 
 
+/**
+ * inputCheck -- checks whether inputs received are valid
+ * Input: (webpage_t*) seedURL, (char*) pageDir, (int) maxDepth
+ * Output: true if all inputs are valid, false otherwise
+ */
 bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth)
 {
+    // Checking validity of seedURL
     if (seedURL == NULL) {
         fprintf(stderr, "seedURL is NULL\n");
         return false;
@@ -67,18 +106,13 @@ bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth)
         fprintf(stderr, "seedURL is not an internal URL\n");
         return false;
     }
-    if (pageDir == NULL) {
-        fprintf(stderr, "pageDir is NULL\n");
+
+    // Checking validity of page directory (existing & writable)
+    if (!isDirectory(pageDir)) {
         return false;
     }
-
-    DIR* dir = opendir(pageDir);
-    if (dir == NULL) {
-        fprintf(stderr, "pageDir is not a valid directory\n");
-        return false;
-    }
-    free(dir);
-
+    
+    // Checking validity of maxDepth
     if (maxDepth < 0 || maxDepth > 10) {
         fprintf(stderr, "maxDepth must be within the range [0,10]\n");
         return false;
@@ -86,21 +120,41 @@ bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth)
     return true;
 }
 
+/**
+ * crawler -- crawls a website and retrieves webpages 
+ * beginning with a given URL. It parses through the initial webpage, 
+ * extracts embedded URLs and retrieves those pages, and crawls these pages 
+ * until there are no more pages to crawl or `maxDepth` is reached. Crawled URLs
+ * are further limited by those 'internal' to the designated CS50 server.
+ * When the crawler process is complete, the indexing of the documents begin.
+ * 
+ * See IMPLEMENTATION.md for more details 
+ * 
+ * Input: (webpage_t*) seedURL, (char*) pageDir, (int) maxDepth
+ * Output: none
+ */
 void crawler(webpage_t* seedURL, char* pageDir, int maxDepth)
 {
-    if (maxDepth < 0) {
-        return;
-    }
-    // Initializing data structures
-    bag_t *bag = bag_new();
-    hashtable_t *visited = hashtable_new(10);
-    int currDepth = 0;
-    int id = 1;
+    // if (maxDepth < 0) {
+    //     return;
+    // }
 
+    // Initializing data structures
+    bag_t *bag = bag_new();                     // Bag of pages to be explored
+    hashtable_t *visited = hashtable_new(10);   // Hashtable of visited pages
+    int currDepth = 0;                          // Current depth counter
+    int id = 1;                                 // Unique page ID counter
+    webpage_t* item;                            // Current webpage
+
+    // Populate 
     bag_insert(bag, seedURL);
     hashtable_insert(visited, webpage_getURL(seedURL), &currDepth);
 	
-    webpage_t* item;
+    /*
+    Fetch, save, scan, and delete the webpage while there are more 
+    pages to explore, contingent on maxDepth not being exceeded and 
+    no errors while exploring pages
+    */
     while ((item = bag_extract(bag)) != NULL) {
         if (pagefetcher(item) == NULL)
             continue;
@@ -113,45 +167,65 @@ void crawler(webpage_t* seedURL, char* pageDir, int maxDepth)
         }
         webpage_delete(item);
     }
+
+    // Free memory
     bag_delete(bag, NULL);
     hashtable_delete(visited, NULL);
 }
 
-
+/**
+ * pagefetcher -- fetches the contents (HTML) for a page from a URL and returns
+ * Input: webpage
+ * Output: HTML of the given webpage
+ */
 char* pagefetcher(webpage_t *page)
 {
     if (webpage_fetch(page)) { 
 		return webpage_getHTML(page);
 	}
-	else { // failed to fetch the page
-		fprintf(stderr, "failed to fetch %s\n", webpage_getHTML(page));
-		// webpage_delete(page);
+	else { 
+        // failed to fetch the page
+		//fprintf(stderr, "failed to fetch %s\n", webpage_getHTML(page));
+		webpage_delete(page);
 		return NULL;
 	}
 }
-		
+
+/**
+ * pagescanner -- extracts URLs from a page and returns each one at a time
+ * Inputs: webpage, hashtable, bag, current depth
+ * Output: none (directly populates the bag with each extracted URL)
+ */		
 void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth)
 {
+    // Error-handling
     if (page == NULL) {
         fprintf(stderr, "pagescanner received invalid webpage\n");
     }
     char* next;
     int pos = 0;
+    // While there are more webpages to be extracted
     while ((next = webpage_getNextURL(page, &pos)) != NULL) {
+        
         // Normalize next URL
         if (!NormalizeURL(next)) {
             fprintf(stderr, "Error normalizing next URL %s\n", next);
             free(next);
             continue;
         }
+
+        // Internal URL check
         if (!IsInternalURL(next)) {
             free(next);
             continue;
         }
+
+        // Insert the webpage into the hashtable after visiting
         if (hashtable_insert(visited, next, &depth)) {
             char* urlcopy = assertp(malloc(strlen(next)+1), "url copy");
             strcpy(urlcopy, next);
 
+            // Extract any additional pages and insert into bag
             webpage_t *web = webpage_new(urlcopy, depth+1, NULL); 
             bag_insert(bag, web);
         }
@@ -159,19 +233,27 @@ void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth)
     }
 }
 
-// outputs a page to the the appropriate file
+/**
+ * pagesaver -- outputs a page to the appropriate file
+ * Input: webpage, (char*) page directory, (int) unique id
+ * Output: true if pages successfully outputted into respective file,
+ *         false otherwise
+ */
 bool pagesaver(webpage_t *page, char* pageDir, int id) 
 {
+    // Allocate memory and copy
     char* num = malloc(sizeof(id)+1);
     sprintf(num, "%d", id);
     char* copy = malloc(strlen(pageDir)+1+sizeof(id));
     strcpy(copy, pageDir);
     strcat(copy, num);
 
+    // Save the webpage URL, depth, and HTML contents into unique file
     FILE *fp = fopen(copy, "w"); 
 	assertp(fp, "cannot open file for writing\n");
 	fprintf(fp, "%s\n%d\n%s", webpage_getURL(page), webpage_getDepth(page), webpage_getHTML(page));
 
+    // Maintaining logistics -- free and close files
 	fclose(fp);
     free(num);
     free(copy);

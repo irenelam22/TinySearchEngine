@@ -1,0 +1,1 @@
+Assumption: directory name has a '/' at the end
