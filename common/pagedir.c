@@ -25,15 +25,13 @@ bool isDirectory(char* directory)
         fprintf(stderr, "directory is NULL\n");
         return false;
     }
-    printf("%d", directory[strlen(directory)]);
-    printf("%d", directory[strlen(directory)-1]);
-    printf("%d", directory[strlen(directory)-2]);
+    char* copy = assertp(malloc(strlen(directory)+10), "directory malloc failed");
+    strcpy(copy, directory);
     if (directory[strlen(directory)-1] != '/') {
         fprintf(stderr, "Please pass directory with a forward slash\n");
         return false;
     }
-    char* copy = assertp(malloc(strlen(directory)+10), "directory malloc failed");
-    strcpy(copy, directory);
+    
     strcat(copy, ".crawler");
 
     FILE* fp = fopen(copy, "w");
