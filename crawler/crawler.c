@@ -28,32 +28,13 @@
 #include "../libcs50/memory.h"
 #include "../common/pagedir.h"
 
+// Function prototypes
 bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth);
 void crawler(webpage_t* seedURL, char* pageDir, int maxDepth);
 char* pagefetcher(webpage_t *page);
 bool pagesaver(webpage_t *page, char* pageDir, int id);
 void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth);
-
-// #ifdef TEST
-// void debug(char* input)
-// {
-//     printf("%s\n", input); 
-// }
-// #else 
-// void debug(char* input) {}
-// #endif
-
-/*
- * bag_web_print: itemprint function to print each URL within the bag
- * Used for debugging purposes
- * Input: FILE*, void*
- * Output: None (prints each webpage URL within the bag)
- */
-void bag_web_print(FILE *fp, void *item) 
-{
-    webpage_t *web = (webpage_t*) item;
-    fprintf(fp, "%s", webpage_getURL(web));
-}
+void bag_web_print(FILE *fp, void *item);
 
 /**
  * Main method for crawler
@@ -227,4 +208,16 @@ void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth)
         }
         free(next);
     }
+}
+
+/*
+ * bag_web_print: itemprint function to print each URL within the bag
+ * Used for debugging purposes
+ * Input: FILE*, void*
+ * Output: None (prints each webpage URL within the bag)
+ */
+void bag_web_print(FILE *fp, void *item) 
+{
+    webpage_t *web = (webpage_t*) item;
+    fprintf(fp, "%s", webpage_getURL(web));
 }

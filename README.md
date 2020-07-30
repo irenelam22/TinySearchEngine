@@ -7,4 +7,11 @@ To build, run `make`.
 
 To clean up, run `make clean`.
 
+To test, run `make test`.
+
+### Other Notes
+
+I attended TA Celina Tala's office hours.
+
+
 

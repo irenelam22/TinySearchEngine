@@ -275,39 +275,76 @@ ls ../data4.5/ | wc -l
 
 echo "Manual verification of files -- files match expectations"
 
-# echo "=========================================================="
+echo "=========================================================="
 
-# echo "Level 3 Testing: Wikipedia playground at depths 0, 1, 2"
+echo "Level 3 Testing: Wikipedia playground at depths 0, 1, 2"
 
-# mkdir -p ../data5.0
+mkdir -p ../data5.0
 
-# echo "Testing crawler on wikipedia html file at depth 0"
-# ./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.0/ 0
-# if [ $? -ne 0 ]; then
-#     echo >&2 "Crawler on wikipedia html at depth 0 failed"
-#     exit 1
-# fi
+echo "Testing crawler on wikipedia html file at depth 0"
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.0/ 0
+if [ $? -ne 0 ]; then
+    echo >&2 "Crawler on wikipedia html at depth 0 failed"
+    exit 1
+fi
 
-# ls ../data5.0/ | wc -l
+echo "Expect 1 file from Wikipedia html at Depth 0. Crawled files: "
+ls ../data5.0/ | wc -l
 
-# mkdir -p ../data5.1
+mkdir -p ../data5.1
 
-# echo "Testing crawler on wikipedia html file at depth 1"
-# ./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.1/ 0
-# if [ $? -ne 0 ]; then
-#     echo >&2 "Crawler on wikipedia html at depth 1 failed"
-#     exit 1
-# fi
+echo "Testing crawler on wikipedia html file at depth 1"
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.1/ 0
+if [ $? -ne 0 ]; then
+    echo >&2 "Crawler on wikipedia html at depth 1 failed"
+    exit 1
+fi
 
-# ls ../data5.1/ | wc -l
+echo "Expect 7 files from Wikipedia html at Depth 1. Crawled files: "
+ls ../data5.1/ | wc -l
 
-# mkdir -p ../data5.2
+mkdir -p ../data5.2
 
-# echo "Testing crawler on wikipedia html file at depth 2"
-# ./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.2/ 0
-# if [ $? -ne 0 ]; then
-#     echo >&2 "Crawler on wikipedia html at depth 2 failed"
-#     exit 1
-# fi
+echo "Testing crawler on wikipedia html file at depth 2"
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.2/ 0
+if [ $? -ne 0 ]; then
+    echo >&2 "Crawler on wikipedia html at depth 2 failed"
+    exit 1
+fi
 
-# ls ../data5.2/ | wc -l
+echo "Expect 1675 files from Wikipedia html at Depth 2. Crawled files: "
+ls ../data5.2/ | wc -l
+
+echo "=========================================================="
+
+echo "Level 5 Testing: Additional tests"
+
+mkdir -p ../data6.0
+echo "Testing crawler on toscrape html file at depth 0"
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/index.html ../data6.0/ 0
+if [ $? -ne 0 ]; then
+    echo >&2 "Crawler on toscrape html at depth 0 failed"
+    exit 1
+fi
+echo "Expect 1 file from toscrape html at Depth 0. Crawled files: "
+ls ../data6.0/ | wc -l
+
+mkdir -p ../data6.1
+echo "Testing crawler on toscrape html file at depth 1"
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/index.html ../data6.1/ 1
+if [ $? -ne 0 ]; then
+    echo >&2 "Crawler on toscrape html at depth 1 failed"
+    exit 1
+fi
+echo "Expect 73 files from toscrape html at Depth 1. Crawled files: "
+ls ../data6.1/ | wc -l
+
+mkdir -p ../data6.2
+echo "Testing crawler on toscrape html file at depth 2"
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/index.html ../data6.2/ 2
+if [ $? -ne 0 ]; then
+    echo >&2 "Crawler on toscrape html at depth 2 failed"
+    exit 1
+fi
+echo "Expect 585 files from toscrape html at Depth 2. Crawled files: "
+ls ../data6.2/ | wc -l
