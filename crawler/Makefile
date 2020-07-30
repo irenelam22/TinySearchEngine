@@ -11,7 +11,7 @@ LIBS = ../libcs50/libcs50.a
 # uncomment the following to turn on verbose memory logging
 #TESTING=-DMEMTEST
 
-CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I../lib -DTEST
+CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I../lib 
 CC = gcc 
 MAKE = make
 
@@ -26,7 +26,7 @@ readline.o: ../libcs50/readlinep.h
 
 test:
 #	bash -v testing.sh
-	bash testing.sh
+	bash testing.sh &> testing.out
 
 valgrind: $(PROG) 
 	valgrind ./$(PROG) 
@@ -35,4 +35,4 @@ clean:
 	rm -rf *.dSYM  # MacOS debugger info
 	rm -f *~ *.o
 	rm -f $(PROG)
-	rm -rf ../data* ../garbage
+	rm -rf ../data* ../garbage*

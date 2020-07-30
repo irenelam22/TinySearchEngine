@@ -34,14 +34,14 @@ char* pagefetcher(webpage_t *page);
 bool pagesaver(webpage_t *page, char* pageDir, int id);
 void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth);
 
-#ifdef TEST
-void debug(char* input)
-{
-    printf("%s\n", input); 
-}
-#else 
-void debug(char* input) {}
-#endif
+// #ifdef TEST
+// void debug(char* input)
+// {
+//     printf("%s\n", input); 
+// }
+// #else 
+// void debug(char* input) {}
+// #endif
 
 /*
  * bag_web_print: itemprint function to print each URL within the bag
@@ -82,14 +82,28 @@ int main(int argc, char* argv[])
     char* urlcopy = assertp(malloc(strlen(seedURL)+1), "url copy");
     strcpy(urlcopy, seedURL);
 
+    // char* dircopy = argv[2];
+    // Making a copy of the directory on the heap
+    char* dir = argv[2];
+    char* dircopy = assertp(malloc(strlen(argv[2])+10), "dir copy");
+    strcpy(dircopy, dir);
+
+    // Add a backslash to the end of the directory if needed
+    if (dircopy[strlen(dircopy)-1] != '/') {
+        strcat(dircopy, "/");
+    }
+
     // Check inputs (see inputCheck below for more details)
 	webpage_t *web = webpage_new(urlcopy, 0, NULL); 
-    if (!inputCheck(web, argv[2], atoi(argv[3]))) {
-        free(urlcopy);
+    if (!inputCheck(web, dircopy, atoi(argv[3]))) {
+        // free(urlcopy);
+        webpage_delete(web);
+        free(dircopy);
         return 2;
     }
 
-    crawler(web, argv[2], atoi(argv[3]));
+    crawler(web, dircopy, atoi(argv[3]));
+    free(dircopy);
     return 0;
 } 
 
@@ -138,10 +152,6 @@ bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth)
  */
 void crawler(webpage_t* seedURL, char* pageDir, int maxDepth)
 {
-    // if (maxDepth < 0) {
-    //     return;
-    // }
-
     // Initializing data structures
     bag_t *bag = bag_new();                     // Bag of pages to be explored
     hashtable_t *visited = hashtable_new(10);   // Hashtable of visited pages
@@ -176,23 +186,6 @@ void crawler(webpage_t* seedURL, char* pageDir, int maxDepth)
     hashtable_delete(visited, NULL);
 }
 
-/**
- * pagefetcher -- fetches the contents (HTML) for a page from a URL and returns
- * Input: webpage
- * Output: HTML of the given webpage
- */
-char* pagefetcher(webpage_t *page)
-{
-    if (webpage_fetch(page)) { 
-		return webpage_getHTML(page);
-	}
-	else { 
-        // failed to fetch the page
-		fprintf(stderr, "failed to fetch %s\n", webpage_getHTML(page));
-		webpage_delete(page);
-		return NULL;
-	}
-}
 
 /**
  * pagescanner -- extracts URLs from a page and returns each one at a time
@@ -234,33 +227,4 @@ void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth)
         }
         free(next);
     }
-}
-
-/**
- * pagesaver -- outputs a page to the appropriate file
- * Input: webpage, (char*) page directory, (int) unique id
- * Output: true if pages successfully outputted into respective file,
- *         false otherwise
- */
-bool pagesaver(webpage_t *page, char* pageDir, int id) 
-{
-    // Allocate memory and copy
-    char* num = malloc(sizeof(id)+1);
-    sprintf(num, "%d", id);
-    debug(num);
-    char* copy = malloc(strlen(pageDir)+1+sizeof(id));
-    strcpy(copy, pageDir);
-    strcat(copy, num);
-
-    // Save the webpage URL, depth, and HTML contents into unique file
-    FILE *fp = fopen(copy, "w"); 
-	assertp(fp, "cannot open file for writing\n");
-	fprintf(fp, "%s\n%d\n%s", webpage_getURL(page), webpage_getDepth(page), webpage_getHTML(page));
-    debug(webpage_getURL(page));
-
-    // Maintaining logistics -- free and close files
-	fclose(fp);
-    free(num);
-    free(copy);
-    return true;
 }

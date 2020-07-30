@@ -1,0 +1,95 @@
+make[1]: Entering directory '/net/ifs-users/ilam/cs50/labs/tse-irenelam22/crawler'
+gcc  -Wall -pedantic -std=c11 -ggdb  -I../lib    -c -o crawler.o crawler.c
+gcc  -Wall -pedantic -std=c11 -ggdb  -I../lib    -c -o ../common/pagedir.o ../common/pagedir.c
+gcc  -Wall -pedantic -std=c11 -ggdb  -I../lib  crawler.o ../common/pagedir.o ../libcs50/libcs50.a -o crawler
+make[1]: Leaving directory '/net/ifs-users/ilam/cs50/labs/tse-irenelam22/crawler'
+Integration testing for crawler module.
+Please use -DTEST flag to see progress indicators (e.g. file ID and URL).
+(Currently commented out for brevity, see Makefile to add the flag)
+Please use valgrind to check for memory leaks
+==========================================================
+Level 0 Testing: Parameter Checks
+Error-handling: Insufficient arguments
+Insufficient number of arguments
+Error caught: Insufficient arguments provided
+Error-handling: Too many arguments
+Too many arguments provided
+Error caught: Too many arguments provided
+Error-handling: Testing crawler on invalid site (not internal)
+seedURL is not an internal URL
+Error caught: Crawler ignores sites that are not internal
+Error-handling: Testing crawler on invalid server (non-existent)
+Error caught: Crawler ignores and continues on an invalid server
+Error-handling: Testing crawler on a valid server but non-existent page
+Error caught: Crawler ignores and continues on nonexistent pages
+Error-handling: Testing crawler on invalid depth (negative depth)
+maxDepth must be within the range [0,10]
+Error caught: Crawler does not accept invalid depths
+Error-handling: Testing crawler on invalid depth (greater than 10 depth)
+maxDepth must be within the range [0,10]
+Error caught: Crawler does not accept invalid depths
+Error-handling: Testing crawler on invalid directory (NULL directory)
+Directory either does not exist or is not writable
+Error caught: Crawler does not accept NULL directory
+Error-handling: Testing crawler on directories without backslash
+Crawler adds a backslash for you!
+Error-handling: Testing crawler on directories with a backslash
+Crawler continues if there already is a backslash
+Error-handling: Testing crawler on invalid directory (doesn't exist)
+Directory either does not exist or is not writable
+Error caught: Crawler does not accept nonexistent directories
+Error-handling: Testing crawler on invalid directory (no write permission)
+Directory either does not exist or is not writable
+Error caught: Directory must be writable
+==========================================================
+Level 1 Testing: Simple tests & webpages with cycles
+Testing crawler on simple html file
+Expect 1 files. Crawled files: 
+1
+Crawling a simple, closed set of cross-linked web pages
+Testing on letters html at depth 4 (contains loops)
+Expect 8 files. Crawled files: 
+8
+Manual verification of files -- no pages are missing or duplicated
+==========================================================
+Level 2 Testing: Exploring at depths 0, 1, 2, 3, 4, 5 and verifying
+Now crawling Letters html at Depth 0
+Expect 1 file from Letters html at Depth 0. Crawled files: 
+1
+Now crawling Letters html at Depth 1
+Expect 2 files from Letters html at Depth 1. Crawled files: 
+2
+Now crawling Letters html at Depth 2
+Expect 3 files from Letters html at Depth 2. Crawled files: 
+3
+Now crawling Letters html at Depth 3
+Expect 6 files from Letters html at Depth 3. Crawled files: 
+6
+Now crawling Letters html at Depth 4
+Expect 8 files from Letters html at Depth 4. Crawled files: 
+8
+Now crawling Letters html at Depth 5
+Expect 9 files from Letters html at Depth 5. Crawled files: 
+9
+Manual verification of files -- files match expectations
+==========================================================
+Level 2 Testing cont.: Repeating with a different seed page in the same site
+Now crawling B html at Depth 0
+Expect 1 files from B html at Depth 0. Crawled files: 
+1
+Now crawling B html at Depth 1
+Expect 5 files from B html at Depth 1. Crawled files: 
+5
+Now crawling B html at Depth 2
+Expect 8 file from B html at Depth 2. Crawled files: 
+8
+Now crawling B html at Depth 3
+Expect 9 files from B html at Depth 3. Crawled files: 
+9
+Now crawling B html at Depth 4
+Expect 9 files from B html at Depth 4. Crawled files: 
+9
+Now crawling B html at Depth 5
+Expect 9 files from B html at Depth 5. Crawled files: 
+9
+Manual verification of files -- files match expectations
