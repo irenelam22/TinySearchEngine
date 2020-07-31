@@ -1,7 +1,7 @@
-make[1]: Entering directory '/net/ifs-users/ilam/cs50/labs/tse-irenelam22/crawler'
+make[2]: Entering directory '/net/ifs-users/ilam/cs50/labs/tse-irenelam22/crawler'
 gcc  -Wall -pedantic -std=c11 -ggdb  -I../common -I../libcs50   -c -o crawler.o crawler.c
 gcc  -Wall -pedantic -std=c11 -ggdb  -I../common -I../libcs50 crawler.o ../libcs50/libcs50.a ../common/common.a -o crawler
-make[1]: Leaving directory '/net/ifs-users/ilam/cs50/labs/tse-irenelam22/crawler'
+make[2]: Leaving directory '/net/ifs-users/ilam/cs50/labs/tse-irenelam22/crawler'
 Integration testing for crawler module.
 Currently using -DTEST flag to see progress indicators (e.g. file ID and URL).
 (Please comment out for brevity, see Makefile in common to delete the flag)

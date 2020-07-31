@@ -21,7 +21,7 @@ Please refer to `pagedir.h` for details regarding implementation.
 
 ### Assumptions
 
-No assumptions beyond those made within the spec.
+I made all assumptions listed within the spec. In addition, I wasn't sure what methods would be shared between crawler, indexer, and querier, so I only included `isDirectory`, `pagefetcher`, and `pagesaver` within `pagedir`.
 
 ### Files
 

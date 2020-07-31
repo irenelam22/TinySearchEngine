@@ -94,10 +94,10 @@ char* pagefetcher(webpage_t *page)
 bool pagesaver(webpage_t *page, char* pageDir, int id) 
 {
     // Allocate memory and copy
-    char* num = malloc(sizeof(id)+1);
+    char* num = assertp(malloc(sizeof(id)+1), "pagesaver ID");
     sprintf(num, "%d", id);
     debug(num);
-    char* copy = malloc(strlen(pageDir)+1+sizeof(id));
+    char* copy = assertp(malloc(strlen(pageDir)+1+sizeof(id)), "pagesaver pageDir");
     strcpy(copy, pageDir);
     strcat(copy, num);
 

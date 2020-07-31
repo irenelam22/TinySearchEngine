@@ -47,5 +47,3 @@ To compile, simply `make crawler.o`.
 The `testing.sh` script tests crawler on numerous files, and tests errors and edge cases.
 
 To test, simply `make test`.
-
-To test with valgrind, `make valgrind`.
