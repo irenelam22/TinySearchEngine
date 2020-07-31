@@ -11,8 +11,8 @@ mkdir -p ../garbage
 make
 
 echo "Integration testing for crawler module."
-echo "Please use -DTEST flag to see progress indicators (e.g. file ID and URL)."
-echo "(Currently commented out for brevity, see Makefile in common to add the flag)"
+echo "Currently using -DTEST flag to see progress indicators (e.g. file ID and URL)."
+echo "(Please comment out for brevity, see Makefile in common to delete the flag)"
 echo "Please use valgrind to check for memory leaks"
 
 echo "=========================================================="

@@ -11,7 +11,7 @@ To test, run `make test`.
 
 ### Other Notes
 
-I attended TA Celina Tala's office hours.
+I attended TA Celina Tala and TA Katherine Taylor's office hours.
 
 
 

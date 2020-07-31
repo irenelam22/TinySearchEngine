@@ -87,7 +87,7 @@ bool pagesaver(webpage_t *page, char* pageDir, int id);
 (Note: This was given by Professor Zhou within the Design spec.)
 
 The crawler implementation runs as follows (using C):
-
+```c
 1. execute from a command line as shown in the User Interface
 2. parse the command line, validate parameters (e.g. noramlize URL, check if URL is internal)
 3. create space on the heap (and free when done) and initialize other modules
@@ -111,3 +111,4 @@ The crawler implementation runs as follows (using C):
 					21. add the new webpage to the *bag* of webpages to be crawled
         22. delete the webpage
 23. delete the bag and hashtable
+```

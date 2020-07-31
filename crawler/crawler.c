@@ -187,7 +187,7 @@ void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth)
         // Normalize next URL
         if (!NormalizeURL(next)) {
             // debug("Error normalizing next URL");
-            fprintf(stderr, "Error normalizing next URL %s\n", next);
+            // fprintf(stderr, "Error normalizing next URL %s\n", next);
             free(next);
             continue;
         }

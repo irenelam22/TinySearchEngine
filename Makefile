@@ -12,6 +12,10 @@ all:
 	# make -C indexer
 	# make -C querier
 
+############## test: make all tests ##########
+test:
+	make -C crawler test
+
 ############## valgrind all programs ##########
 valgrind: all
 	make -C crawler valgrind
