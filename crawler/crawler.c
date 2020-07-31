@@ -28,11 +28,11 @@
 #include "../libcs50/memory.h"
 #include "../common/pagedir.h"
 
+
 // Function prototypes
 bool inputCheck(webpage_t *seedURL, char* pageDir, int maxDepth);
 void crawler(webpage_t* seedURL, char* pageDir, int maxDepth);
 char* pagefetcher(webpage_t *page);
-bool pagesaver(webpage_t *page, char* pageDir, int id);
 void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth);
 void bag_web_print(FILE *fp, void *item);
 
@@ -186,6 +186,7 @@ void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth)
         
         // Normalize next URL
         if (!NormalizeURL(next)) {
+            // debug("Error normalizing next URL");
             fprintf(stderr, "Error normalizing next URL %s\n", next);
             free(next);
             continue;

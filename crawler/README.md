@@ -21,9 +21,12 @@ void bag_web_print(FILE *fp, void *item);
 
 Please refer to `IMPLEMENTATION.md` for details regarding implementation.
 
+(Note: I attended TA Katherine Taylor's office hours. As per her advice, the DESIGN.md pseudocode
+is sufficient for the Implementation spec. We also weren't sure how to include language dependent, operating system, and hardware dependent characteristics typical of the implementation spec, so these were mostly left out.)
+
 ### Assumptions
 
-No assumptions beyond those that made within the spec.
+I made no assumptions beyond those made within the spec and those listed within this file. 
 
 ### Files
 

@@ -64,7 +64,8 @@ bool isDirectory(char* directory)
 
 /**************** pagefetcher ****************/
 /**
- * pagefetcher -- fetches the contents (HTML) for a page from a URL and returns
+ * pagefetcher -- fetches the contents (HTML) for a page from a URL
+ * and returns the HTML contents for that given page
  * Input: webpage
  * Output: HTML of the given webpage
  */

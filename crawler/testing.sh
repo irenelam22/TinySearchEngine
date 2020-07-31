@@ -12,7 +12,7 @@ make
 
 echo "Integration testing for crawler module."
 echo "Please use -DTEST flag to see progress indicators (e.g. file ID and URL)."
-echo "(Currently commented out for brevity, see Makefile to add the flag)"
+echo "(Currently commented out for brevity, see Makefile in common to add the flag)"
 echo "Please use valgrind to check for memory leaks"
 
 echo "=========================================================="
@@ -294,7 +294,7 @@ ls ../data5.0/ | wc -l
 mkdir -p ../data5.1
 
 echo "Testing crawler on wikipedia html file at depth 1"
-./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.1/ 0
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.1/ 1
 if [ $? -ne 0 ]; then
     echo >&2 "Crawler on wikipedia html at depth 1 failed"
     exit 1
@@ -306,7 +306,7 @@ ls ../data5.1/ | wc -l
 mkdir -p ../data5.2
 
 echo "Testing crawler on wikipedia html file at depth 2"
-./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.2/ 0
+./crawler http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html ../data5.2/ 2
 if [ $? -ne 0 ]; then
     echo >&2 "Crawler on wikipedia html at depth 2 failed"
     exit 1
