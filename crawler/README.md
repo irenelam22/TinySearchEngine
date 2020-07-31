@@ -17,6 +17,12 @@ void pagescanner(webpage_t *page, hashtable_t *visited, bag_t *bag, int depth);
 void bag_web_print(FILE *fp, void *item);
 ```
 
+Please run the following to execute the `crawler`:
+`./crawler seedURL pageDirectory maxDepth`
+* where `seedURL` is used as the initial URL,
+* where `pageDirectory` is the directory in which to write downloaded webpages, and
+* where `maxDepth` represents the maximum crawl depth.
+
 ### Implementation
 
 Please refer to `IMPLEMENTATION.md` for details regarding implementation.
@@ -26,7 +32,7 @@ is sufficient for the Implementation spec. We also weren't sure how to include l
 
 ### Assumptions
 
-I made no assumptions beyond those made within the spec and those listed within this file. 
+I made the same assumptions as those listed within the spec and within this file. Additionally, I chose to comment out log messages (e.g. failure to fetch a webpage) within crawler for brevity. I left these comments within the code such that they can be commented back in to see these log messages.
 
 ### Files
 
