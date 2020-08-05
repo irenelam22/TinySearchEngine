@@ -1,0 +1,1 @@
+Assume filename doesn't end in a backslash (since it's a filename)
