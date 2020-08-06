@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,10 +13,16 @@
 #include "../common/pagedir.h"
 #include "../common/index.h"
 
-int main() {
+
+//./indextest oldIndexFilename newIndexFilename
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: ./indextest oldIndexFilename newIndexFilename\n");
+        return 1;
+    }
+    
     index_t* index = index_new(10);
     index = index_load("../data");
-
-    (void)index;
+    index_save(index, argv[2]);
     return 0;
 }

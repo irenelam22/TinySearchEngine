@@ -11,6 +11,7 @@
 #include "../libcs50/webpage.h"
 #include "../libcs50/memory.h"
 #include "../common/pagedir.h"
+#include "../common/index.h"
 
 // Function prototypes
 
@@ -49,6 +50,9 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Directory either does not exist or is not writable\n");
         return 1;
     }
+
+    indexer(dircopy, fileCopy);
+
     fclose(fp);
     
 
@@ -68,4 +72,9 @@ bool inputCheck(char* dir, char* pathToFile) {
     
 
     return true;
+}
+
+index_t* indexer(char* dir, char* filename) 
+{
+    index_t* index = index_build(dir);
 }
