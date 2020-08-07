@@ -1,22 +1,63 @@
-Assume filename doesn't end in a backslash (since it's a filename)
+# CS50 Lab 5 Indexer 
+## Irene Lam, Summer 2020
 
-/*
-indexer - first!
-read in page dir with pages from crawler
-call index_build -> takes a page dir and populate an index data structure with all pages from directory
-    builds index data structure index_t*
+### indexer
+
+An `indexer` reads the documents in a given `directory` outputted by the crawler (see `Crawler README` for details), builds an inverted index mapping from words to document ID and count, and writes that index to a file.
+
+### indextest
+
+`indextest` tests the output of `indexer` by reading an index file from indexer and saving the recreated index data structure into another file.
+
+### Usage
+
+The *indexer* and *indextest* modules, implemented in `indexer.c` and `indextest.c` respectively, builds and saves and loads an index mapping using the below functions from `/commmon/index.c`. Please see the respective file for more details on these functions:
+
+```c
+index_t* index_load(char* filename);
+void index_save(index_t* index, char* filename);
+index_t* index_build(char* pagedir);
+```
+
+Please run the following to execute `indexer`:
+`./indexer pageDirectory indexFilename`
+* where `pageDirectory` is the pathname of a directory produced by the Crawler, and
+* where `maxDepth` is the pathname of a file into which the index should be written; the indexer creates the file (if needed) and overwrites the file (if it already exists).
+
+Please run the following to execute `indextest`:
+`./indextest oldIndexFilename newIndexFilename`
+* where `oldIndexFilename` is the name of a file produced by the indexer, and
+* where `newIndexFilename` is the name of a file into which the index should be written.
+
+### Implementation
+
+Please refer to `IMPLEMENTATION.md` for details regarding implementation.
 
 
-index.c
-index_save -> saves the index data structure into a readable file (takes the new file name)
+### Assumptions
 
-index_load -> takes an index file (from index_save) and creates a index data structure
-called in indextest
+I made the same assumptions as those listed within the specs of this assignment, as well as those listed within this file. Additionally, I assumed that the given filename will not end in a backslash (given that it is supposed to be a file and not a directory).
 
-indextest read index file from indexer (call indexer first), use inxex_load to recreate index data structure
-save index data sturcture to another file
+As per the assignment, I assumed that the `DESIGN` and `IMPLEMENTATION` spec need only be written for `index.c` and not `indextest.c`. As per my previous conversation with TA Katherine Taylor, I assumed that the `IMPLEMENTATION` spec does not need pseudocode, or sufficies with the pseudocode given by the assignment, and that sections for language dependent, operating system, and hardware dependent characteristics typical of the implementation spec could be left out for this assignment.
 
-testing.sh - random tests
-*/
+I assumed unit testing is not required for this lab (according to slack).
 
-reminders: change hashtable size at end
+### Files
+
+* `Makefile` - compilation procedure
+* `indexer.c` - the implementation for indexer
+* `indextest.c` - the implementation for indextest
+* `testing.sh` - integration testing driver
+* `testing.out` - test data
+* `IMPLEMENTATION.md` - implementation details for indexer
+* `DESIGN.md` - design specs for indexer 
+
+### Compilation
+
+To compile, simply `make indexer.o`.
+
+### Testing
+
+The `testing.sh` script tests `indexer` and `indextest` on numerous files for errors and edge cases. It also ensures that the output of the two files is the same once sorted.
+
+To test, simply `make test`.

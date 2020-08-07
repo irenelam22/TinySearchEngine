@@ -1,6 +1,12 @@
 /* 
  * index.c - CS50 'index' module
  *
+ * 'index' module contains methods that need to be shared by crawler, 
+ * indexer, and querier. More specifically, 'index' helps the indexer 
+ * read the documents in a given `directory` outputted by the crawler, 
+ * builds an inverted index mapping from words to document ID and count, 
+ * and writes that index to a file
+ * 
  * see index.h for more information.
  *
  * Irene Lam, August 4, 2020
@@ -27,28 +33,57 @@
 /**************** global types ****************/
 typedef hashtable_t index_t;
 
-char* updateIndex(char* fp, int i);
+/**************** functions ****************/
 
+/**************** index_new ****************/
+/* Create a new (empty) index_t of the given integer size.
+ * Input: integer representing the size of the index
+ * Output: initialized and empty index_t
+ */
 index_t* index_new(const int num_slots)
 {
     return (index_t*)hashtable_new(num_slots);
 }
 
+/**************** index_find ****************/
+/* Returns the counters set associated with the given key
+ * Input: index, key of set to find
+ * Output: corresponding set if found, NULL if hashtable is NULL, 
+ *         key is NULL, key is not found
+ */
 void* index_find(index_t* index, const char* key)
 {
     return (index_t*)hashtable_find(index, key);
 }
 
+/**************** index_insert ****************/
+/* Insert item, identified by key (string), into the given index.
+ * Input: counter set item and corresponding key
+ * Output: true if the new item was inserted properly, false otherwise
+ */
 bool index_insert(index_t* index, const char *key, void *item)
 {
     return (index_t*)hashtable_insert(index, key, item);
 }
 
+/**************** printset ****************/
+/* Helper method to print counters set as follows
+    docID count [docID count]...
+ * Input: filename, docID key, int count
+ * Output: None (prints to file)
+ */
 void printset(void *fp, const int key, const int count)
 {
     fprintf(fp, " %d %d", key, count);
 }
 
+/**************** item_print ****************/
+/* itemprint method to be passed to index_print
+ * Prints counters as follows:
+        word docID count [docID count]...
+ * Input: file, word key, counters set item
+ * Output: None (prints to file)
+ */
 void item_print(void *fp, const char *key, void *item)
 {
     fprintf(fp, "%s", key);
@@ -56,46 +91,92 @@ void item_print(void *fp, const char *key, void *item)
     fprintf(fp, "\n");
 }
 
+/**************** index_print ****************/
+/* Prints index where each line is as follows:
+    word docID count [docID count]...
+ * Input: index, file to print to, itemprint method
+ * Output: None (prints to file)
+ */
 void index_print(index_t *ht, void *fp,
                      void (*itemprint)(void *fp, const char *key, void *item))
 {
     hashtable_iterate((hashtable_t*)ht, fp, itemprint);
 }
 
+/**************** itemdelete ****************/
+/* itemdelete method to be passed to index_delete
+ * Deletes the counters set within the index
+ * Input: counters set (from index)
+ * Output: None
+ */
 void itemdelete(void* item)
 {
     counters_delete((counters_t*)item);
 }
 
+/**************** index_delete ****************/
+/* Deletes the index and its interior counter set
+ * Input: index to be deleted
+ * Output: None
+ */
 void index_delete(index_t* index)
 {
     hashtable_delete(index, itemdelete);
 }
 
+/**************** iprint ****************/
+/* For debugging purposes
+ * Prints given index to stdout
+ * Input: index
+ * Output: None (prints to stdout)
+ */
 void iprint(index_t* index) 
 {
     index_print(index, stdout, item_print);
 }
 
-/**
- * takes a page dir and populate an index data structure with all pages from directory
-    builds index data structure index_t
+/**************** updateIndex ****************/
+/* Helper method for index_build
+ * Updates the file within the directory for parsing
+ * Input: filename, integer tagged to the file
+ * Output: new file name (incremented by 1)
+ */
+char* updateIndex(char* fp, int i) 
+{  
+    // Allocate memory on the heap and increment document ID
+    char* copy = assertp(malloc(strlen(fp) +10), "file copy malloc failed");
+    strcpy(copy, fp);
+    char* num = assertp(malloc(sizeof(i)+1), "index_load ID");
+    sprintf(num, "%d", i);
+    strcat(copy, num);
+    free(num);
+    return copy;
+}
+
+/**************** index_build ****************/
+/* Builds an index data structure from a given pagedirectory by parsing through
+ * the directory for respective word count and document ID
+ * Input: directory output from crawler
+ * Output: index representation of the file
  */
 index_t* index_build(char* pagedir) 
 {
-    const int tableSize = 20;
+    const int tableSize = 200;
     if (pagedir == NULL) {
         return NULL;
     }
 
+    // Instantiate new index_t* and initialize variables
     index_t* table = assertp(index_new(tableSize), "index_t failed");
 
     int i = 1;
     char* result = NULL;
     char* copy = updateIndex(pagedir, i);
     
+    // While the file is readable
     FILE* fp;
     while ((fp = fopen(copy, "r")) != NULL) {
+        // Ignore words with less than three characters
         if (lines_in_file(fp) < 3) {
             i++;
             free(copy);
@@ -103,6 +184,8 @@ index_t* index_build(char* pagedir)
             fclose(fp);
             continue;
         }
+
+        // Record url, depth, html, and new webpage
         char* url = freadlinep(fp);
         char* depth = freadlinep(fp);
         char* html = freadfilep(fp);
@@ -114,16 +197,21 @@ index_t* index_build(char* pagedir)
             fclose(fp);
             break;
         }
+        // Keep track of current page number
         int pos = 0; 
-        // mapping from *words* to (documentID, count) pairs
+
+        // Read through each word within the given webpage
         while ((result = webpage_getNextWord(page, &pos)) != NULL) {
             if (strlen(result) < 3) {
                 free(result);
                 continue;
             }
-
             normalizeWord(result);
+
+            // Map from words to (documentID, count)
             counters_t* set = index_find(table, result);
+            
+            // Create a new counters set if it doesn't already exist
             if (set == NULL) {
                 set = assertp(counters_new(), "counters_new failed");
                 
@@ -132,6 +220,7 @@ index_t* index_build(char* pagedir)
                     fprintf(stderr, "Failed to insert %s", result);
                 }
             }
+            // Increment the word count if the set already exists
             else {
                 counters_add(set, i);
             }
@@ -139,6 +228,7 @@ index_t* index_build(char* pagedir)
             free(result);
         }
 
+        // Free and close file as unused
         fclose(fp);
         free(depth);
         webpage_delete(page);
@@ -151,20 +241,14 @@ index_t* index_build(char* pagedir)
     return table;
 }
 
-char* updateIndex(char* fp, int i) 
-{  
-    char* copy = assertp(malloc(strlen(fp) +10), "file copy malloc failed");
-    strcpy(copy, fp);
-    char* num = assertp(malloc(sizeof(i)+1), "index_load ID");
-    sprintf(num, "%d", i);
-    strcat(copy, num);
-    free(num);
-    return copy;
-}
-
-
+/**************** index_save ****************/
+/* Saves the given data structure into a writable file
+ * Input: Index data structure, file
+ * Output: None
+ */
 void index_save(index_t* index, char* filename)
 {
+    // Error-handling
     if (index == NULL || filename == NULL) {
         fprintf(stderr, "invalid input to index_save");
         return;
@@ -176,12 +260,19 @@ void index_save(index_t* index, char* filename)
         return;
     }
 
+    // Print index to given file
     index_print(index, fp, item_print);
     fclose(fp);
 }
 
+/**************** index_load ****************/
+/* Creates an index data structure from a given index file and returns this
+ * Input: filename of index file produced from index_save
+ * Output: index representation of given file
+ */
 index_t* index_load(char* filename) 
 {
+    // Error-handling
     index_t* index = index_new(10);
     if (index == NULL) {
         fprintf(stderr, "index_load could not create new index");
@@ -192,11 +283,14 @@ index_t* index_load(char* filename)
         fprintf(stderr, "could not open index_load file");
         return NULL;
     }
-    // word docID count [docID count]...
-    char* line = NULL;
-    char delim[] = " ";
-    
+
+    char* line = NULL;          // Current line for strtok
+    char delim[] = " ";         // Delimiter for strtok
+
+    /* As we are reading the output from index_save, lines are of the form
+     word docID count [docID count]... */
     while ((line = freadlinep(fp)) != NULL) {
+        // Update and initialize variables
         char* word = strtok(line, delim);
         char* docID = NULL;
         char* count = NULL;
@@ -210,13 +304,17 @@ index_t* index_load(char* filename)
             index_delete(index);
             return NULL;
         }
+
+        // While another docID and corresponding count exists on the given line
         while (((docID = strtok(NULL, delim)) != NULL) && ((count = strtok(NULL,delim)) != NULL)) {
             intCount = atoi(count);
             intID = atoi(docID);
-            // *words* to *(documentID, count) pairs*
+
+            // Set the (documentID, count) pairs of the given word
             counters_set(set, intID, intCount);  
         }
         index_insert(index, word, set);
+
         free(line);
     }
     fclose(fp);
