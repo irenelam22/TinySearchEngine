@@ -190,7 +190,6 @@ index_t* index_load(char* filename)
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) {
         fprintf(stderr, "could not open index_load file");
-        free(fp);
         return NULL;
     }
     // word docID count [docID count]...
@@ -206,7 +205,8 @@ index_t* index_load(char* filename)
         counters_t* set = counters_new();
         if (set == NULL) {
             fprintf(stderr, "could not instantiate set");
-            free(fp);
+            fclose(fp);
+            free(line);
             index_delete(index);
             return NULL;
         }
@@ -217,7 +217,8 @@ index_t* index_load(char* filename)
             counters_set(set, intID, intCount);  
         }
         index_insert(index, word, set);
+        free(line);
     }
-    free(fp);
+    fclose(fp);
     return index;
 }
