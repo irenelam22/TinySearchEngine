@@ -4,7 +4,7 @@
 # CS50, Summer 2020
 
 # PROG = pagedir
-OBJS = pagedir.o index.o
+OBJS = pagedir.o index.o word.o
 LIBS = ../libcs50/libcs50.a
 LIB = common.a
 
@@ -22,6 +22,7 @@ $(LIB): $(OBJS)
 # readline.o: ../libcs50/readlinep.h
 pagedir.o: pagedir.h
 index.o: index.h
+word.o: word.h
 
 .PHONY: test valgrind clean
 

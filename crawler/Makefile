@@ -12,7 +12,7 @@ LIBS = ../libcs50/libcs50.a ../common/common.a
 #TESTING=-DMEMTEST
 
 CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I../common -I../libcs50
-CC = gcc 
+CC = gcc
 MAKE = make
 
 $(PROG): $(OBJS)

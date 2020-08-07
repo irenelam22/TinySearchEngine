@@ -9,7 +9,7 @@ all:
 	make -C libcs50
 	make -C common
 	make -C crawler
-	# make -C indexer
+	make -C indexer
 	# make -C querier
 
 ############## test: make all tests ##########
@@ -19,7 +19,7 @@ test:
 ############## valgrind all programs ##########
 valgrind: all
 	make -C crawler valgrind
-	# make -C indexer valgrind
+	make -C indexer valgrind
 	# make -C querier valgrind
 
 ############## clean  ##########
@@ -28,5 +28,5 @@ clean:
 	make -C libcs50 clean
 	make -C common clean
 	make -C crawler clean
-	# make -C indexer clean
+	make -C indexer clean
 	# make -C querier clean

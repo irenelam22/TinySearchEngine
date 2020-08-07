@@ -27,7 +27,7 @@
 /**************** global types ****************/
 typedef hashtable_t index_t;
 
-void updateIndex(char* fp, char* copy, char* num, int i);
+char* updateIndex(char* fp, char* copy, char* num, int i);
 
 index_t* index_new(const int num_slots)
 {
@@ -44,17 +44,22 @@ bool index_insert(index_t* index, const char *key, void *item)
     return (index_t*)hashtable_insert(index, key, item);
 }
 
-void* item_print(FILE *fp, const char *key, void *item)
+void printset(void *fp, const int key, const int count)
 {
-    fprintf(fp, "%s ", key);
-    counters_print((counters_t*)item, fp);
+    fprintf(fp, " %d %d", key, count);
+}
+
+void item_print(void *fp, const char *key, void *item)
+{
+    fprintf(fp, "%s", key);
+    counters_iterate((counters_t*)item, fp, printset);
     fprintf(fp, "\n");
 }
 
-void index_print(index_t *ht, FILE *fp,
-                     void (*itemprint)(FILE *fp, const char *key, void *item))
+void index_print(index_t *ht, void *fp,
+                     void (*itemprint)(void *fp, const char *key, void *item))
 {
-    hashtable_print((hashtable_t*)ht, fp, itemprint);
+    hashtable_iterate((hashtable_t*)ht, fp, itemprint);
 }
 
 // Add index_print with itemprint
@@ -63,6 +68,11 @@ void index_delete(index_t* index, void (*itemdelete)(void *item) )
 {
     hashtable_delete(index, itemdelete);
     // write itemdelete
+}
+
+void iprint(index_t* index) 
+{
+    index_print(index, stdout, item_print);
 }
 
 /**
@@ -82,13 +92,13 @@ index_t* index_build(char* pagedir)
     char* result = NULL;
     char* num = NULL;
     char* copy = NULL;
-    updateIndex(pagedir, copy, num, i);
+    copy = updateIndex(pagedir, copy, num, i);
     
     FILE* fp;
     while ((fp = fopen(copy, "r")) != NULL) {
         if (lines_in_file(fp) < 3) {
             i++;
-            updateIndex(pagedir, copy, num, i);
+            copy = updateIndex(pagedir, copy, num, i);
             continue;
         }
         char* url = freadlinep(fp);
@@ -132,19 +142,20 @@ index_t* index_build(char* pagedir)
         free(copy);
         free(num);
         i++;
-        updateIndex(pagedir, copy, num, i);
+        copy = updateIndex(pagedir, copy, num, i);
 
     }
-    
+    // iprint(table);
     return table;
 }
-void updateIndex(char* fp, char* copy, char* num, int i) 
+char* updateIndex(char* fp, char* copy, char* num, int i) 
 {  
     copy = assertp(malloc(strlen(fp) +10), "file copy malloc failed");
     strcpy(copy, fp);
     num = assertp(malloc(sizeof(i)+1), "index_load ID");
     sprintf(num, "%d", i);
     strcat(copy, num);
+    return copy;
 }
 
 
@@ -169,13 +180,13 @@ index_t* index_load(char* filename)
     index_t* index = index_new(10);
     if (index == NULL) {
         fprintf(stderr, "index_load could not create new index");
-        return;
+        return NULL;
     }
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) {
         fprintf(stderr, "could not open index_load file");
         free(fp);
-        return;
+        return NULL;
     }
     // word docID count [docID count]...
     char* line = NULL;
@@ -183,22 +194,25 @@ index_t* index_load(char* filename)
     
     while ((line = freadlinep(fp)) != NULL) {
         char* word = strtok(line, delim);
-        char* docID;
-        char* count;
+        char* docID = NULL;
+        char* count = NULL;
+        int intCount = 0;
+        int intID = 0;
         counters_t* set = counters_new();
         if (set == NULL) {
             fprintf(stderr, "could not instantiate set");
             free(fp);
             index_delete(index, NULL);
-            return;
+            return NULL;
         }
-        while ((docID = strtok(line, delim) && (count = strtok(line,delim))) != NULL) {
+        while (((docID = strtok(line, delim)) != NULL) && ((count = strtok(line,delim)) != NULL)) {
+            intCount = atoi(count);
+            intID = atoi(docID);
             // *words* to *(documentID, count) pairs*
-            counters_set(set, docID, count);  
+            counters_set(set, intID, intCount);  
         }
         index_insert(index, word, set);
     }
     free(fp);
-    index_delete(index, NULL);
     return index;
 }

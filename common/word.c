@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <string.h>
 void normalizeWord(char* original) 
 {
     for (int i = 0; i < strlen(original); i++) {
