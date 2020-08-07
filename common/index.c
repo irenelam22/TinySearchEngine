@@ -27,7 +27,7 @@
 /**************** global types ****************/
 typedef hashtable_t index_t;
 
-char* updateIndex(char* fp, char* copy, char* num, int i);
+char* updateIndex(char* fp, int i);
 
 index_t* index_new(const int num_slots)
 {
@@ -62,12 +62,14 @@ void index_print(index_t *ht, void *fp,
     hashtable_iterate((hashtable_t*)ht, fp, itemprint);
 }
 
-// Add index_print with itemprint
+void itemdelete(void* item)
+{
+    counters_delete((counters_t*)item);
+}
 
-void index_delete(index_t* index, void (*itemdelete)(void *item) )
+void index_delete(index_t* index)
 {
     hashtable_delete(index, itemdelete);
-    // write itemdelete
 }
 
 void iprint(index_t* index) 
@@ -90,15 +92,15 @@ index_t* index_build(char* pagedir)
 
     int i = 1;
     char* result = NULL;
-    char* num = NULL;
-    char* copy = NULL;
-    copy = updateIndex(pagedir, copy, num, i);
+    char* copy = updateIndex(pagedir, i);
     
     FILE* fp;
     while ((fp = fopen(copy, "r")) != NULL) {
         if (lines_in_file(fp) < 3) {
             i++;
-            copy = updateIndex(pagedir, copy, num, i);
+            free(copy);
+            copy = updateIndex(pagedir, i);
+            fclose(fp);
             continue;
         }
         char* url = freadlinep(fp);
@@ -109,6 +111,7 @@ index_t* index_build(char* pagedir)
             free(url);
             free(depth);
             free(html);
+            fclose(fp);
             break;
         }
         int pos = 0; 
@@ -135,26 +138,27 @@ index_t* index_build(char* pagedir)
             
             free(result);
         }
-        free(url);
+
+        fclose(fp);
         free(depth);
-        free(html);
-
-        free(copy);
-        free(num);
+        webpage_delete(page);
+        
         i++;
-        copy = updateIndex(pagedir, copy, num, i);
-
+        free(copy);
+        copy = updateIndex(pagedir, i);
     }
-    // iprint(table);
+    free(copy);
     return table;
 }
-char* updateIndex(char* fp, char* copy, char* num, int i) 
+
+char* updateIndex(char* fp, int i) 
 {  
-    copy = assertp(malloc(strlen(fp) +10), "file copy malloc failed");
+    char* copy = assertp(malloc(strlen(fp) +10), "file copy malloc failed");
     strcpy(copy, fp);
-    num = assertp(malloc(sizeof(i)+1), "index_load ID");
+    char* num = assertp(malloc(sizeof(i)+1), "index_load ID");
     sprintf(num, "%d", i);
     strcat(copy, num);
+    free(num);
     return copy;
 }
 
@@ -173,6 +177,7 @@ void index_save(index_t* index, char* filename)
     }
 
     index_print(index, fp, item_print);
+    fclose(fp);
 }
 
 index_t* index_load(char* filename) 
@@ -202,10 +207,10 @@ index_t* index_load(char* filename)
         if (set == NULL) {
             fprintf(stderr, "could not instantiate set");
             free(fp);
-            index_delete(index, NULL);
+            index_delete(index);
             return NULL;
         }
-        while (((docID = strtok(line, delim)) != NULL) && ((count = strtok(line,delim)) != NULL)) {
+        while (((docID = strtok(NULL, delim)) != NULL) && ((count = strtok(NULL,delim)) != NULL)) {
             intCount = atoi(count);
             intID = atoi(docID);
             // *words* to *(documentID, count) pairs*

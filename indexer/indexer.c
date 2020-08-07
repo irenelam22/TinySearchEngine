@@ -14,7 +14,6 @@
 #include "../common/index.h"
 
 // Function prototypes
-bool inputCheck(char* dir, char* pathToFile);
 
 // ./indexer pageDirectory indexFilename
 int main(int argc, char* argv[])
@@ -48,25 +47,16 @@ int main(int argc, char* argv[])
     
     if (fp == NULL) {
         fprintf(stderr, "Directory either does not exist or is not writable\n");
+        free(fileCopy);
+        free(dircopy);
         return 1;
     }
 
     index_t* index = index_build(dircopy);
     index_save(index, fileCopy);
+    index_delete(index);
+    free(dircopy);
     free(fileCopy);
     fclose(fp);
     return 0;
-}
-
-bool inputCheck(char* dir, char* pathToFile) {
-    if (dir == NULL || pathToFile == NULL) {
-        return false;
-    }
-
-    // Checking validity of page directory (existing & writable)
-    if (!isDirectory(dir)) {
-        return false;
-    }
-
-    return true;
 }

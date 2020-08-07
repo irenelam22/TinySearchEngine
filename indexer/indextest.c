@@ -23,5 +23,6 @@ int main(int argc, char* argv[]) {
 
     index_t* index = index_load(argv[1]);
     index_save(index, argv[2]);
+    index_delete(index);
     return 0;
 }
