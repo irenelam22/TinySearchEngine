@@ -125,12 +125,12 @@ Prints "progress" indicators from the indexer as it proceeds.
 
 4. Create an index file from a simple, closed set of cross-linked web pages using `indexer`, in which some page(s) are mentioned multiple times within a page, and multiple times across the set of pages.
 
-Compare the result with the index file created using `indextest`. Sort the two and compare the files to ensure that the `indexer` created a proper `index` file.
+Compare the result with the respective index file from Professor Zhou. Sort the two and compare the files to ensure that the `indexer` created a proper `index` file.
 
 5. Point the indexer at a page in that site, and explore at depths 0, 1, 2, 3, 4, 5.
-Verify that the files created match expectations using `indextest`.
+Verify that the files created match expectations using Professor Zhou's files.
 
 6. Point the indexer at our Wikipedia playground. Explore at depths 0, 1, 2.
-Verify that the files created match expectations using `indextest`.
+Verify that the files created match expectations using Professor Zhou's files.
 
 7. More tests as needed!

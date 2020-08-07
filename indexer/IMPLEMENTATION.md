@@ -165,8 +165,8 @@ The `indexer.c` implementation runs as follows (using C):
 
 ### Testing plan for indexer
 
-To test the output of `indexer.c`, we use `indextest`. In particular, while `indexer` builds and saves an index structure from a crawler directory, `indextest` loads and saves an index structure from the result of calling `indexer`. In this way, both files ultimately arrive at similar--if not the same--index structures using two different methods.
+To test the output of `indexer.c`, we compare them to the [files](http://old-www.cs.dartmouth.edu/~cs50/data/tse-output/) given by Professor Zhou. We can similarly do the same to test the validity of `indextest.c`.
 
-Thus, to test the accuracy of `indexer`, we use the `testing.sh` script. In addition to checking for edge cases, the script will also sort the output of the `indexer` and `indextest` files and compare the two. If the outputs are the same, we know that the index structures produced from `indexer.c` and `indextest.c` are indeed the same, meaning that `indexer` was accurate in parsing through the crawler directory and tallying the frequency of the words per given document file.
+In particular, to test the accuracy of `indexer`, we use the `testing.sh` script. In addition to checking for edge cases, the script will also sort the output of the `indexer` and Professor Zhou's respective file and compare the two. If the outputs are the same, we know that the index structures produced from `indexer.c` are indeed the same, meaning that `indexer` was accurate in parsing through the crawler directory and tallying the frequency of the words per given document file.
 
 Please see `DESIGN.md` for more testing specific examples.

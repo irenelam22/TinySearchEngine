@@ -5,4 +5,4 @@
 
 # Do NOT push data files to git.
 # I suggest you create crawler/indexer output in subdirectories of ./data
-data
+data*

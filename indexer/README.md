@@ -38,9 +38,11 @@ Please refer to `IMPLEMENTATION.md` for details regarding implementation.
 
 I made the same assumptions as those listed within the specs of this assignment, as well as those listed within this file. Additionally, I assumed that the given filename will not end in a backslash (given that it is supposed to be a file and not a directory).
 
-As per the assignment, I assumed that the `DESIGN` and `IMPLEMENTATION` spec need only be written for `index.c` and not `indextest.c`. As per my previous conversation with TA Katherine Taylor, I assumed that the `IMPLEMENTATION` spec does not need pseudocode, or sufficies with the pseudocode given by the assignment, and that sections for language dependent, operating system, and hardware dependent characteristics typical of the implementation spec could be left out for this assignment.
+As per the assignment, I assumed that the `DESIGN` and `IMPLEMENTATION` spec need only be written for `indexer.c` and not `indextest.c`. As per my previous conversation with TA Katherine Taylor, I assumed that the `IMPLEMENTATION` spec does not need pseudocode, or sufficies with the pseudocode given by the assignment, and that sections for language dependent, operating system, and hardware dependent characteristics typical of the implementation spec could be left out for this assignment.
 
 I assumed unit testing is not required for this lab (according to slack).
+
+As per TA Arjun Srinivasa's advice, I assume that testing the accuracy of `indexer` means comparing the results of `indexer` to those provided by Professor Zhou [here](http://old-www.cs.dartmouth.edu/~cs50/data/tse-output/).
 
 ### Files
 
