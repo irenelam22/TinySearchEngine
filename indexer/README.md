@@ -7,7 +7,7 @@ An `indexer` reads the documents in a given `directory` outputted by the crawler
 
 ### indextest
 
-`indextest` tests the output of `indexer` by reading an index file from indexer and saving the recreated index data structure into another file.
+`indextest` reads an index file from indexer and saves the recreated index data structure into another file.
 
 ### Usage
 
@@ -22,7 +22,7 @@ index_t* index_build(char* pagedir);
 Please run the following to execute `indexer`:
 `./indexer pageDirectory indexFilename`
 * where `pageDirectory` is the pathname of a directory produced by the Crawler, and
-* where `maxDepth` is the pathname of a file into which the index should be written; the indexer creates the file (if needed) and overwrites the file (if it already exists).
+* where `indexFilename` is the pathname of a file into which the index should be written; the indexer creates the file (if needed) and overwrites the file (if it already exists).
 
 Please run the following to execute `indextest`:
 `./indextest oldIndexFilename newIndexFilename`

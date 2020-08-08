@@ -14,7 +14,8 @@ all:
 
 ############## test: make all tests ##########
 test:
-	make -C crawler test
+	# make -C crawler test
+	make -C indexer test
 
 ############## valgrind all programs ##########
 valgrind: all

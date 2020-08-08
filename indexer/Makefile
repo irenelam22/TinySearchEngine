@@ -47,7 +47,7 @@ indextest: indextest.o $(LIBS)
 
 test:
 #	bash -v testing.sh
-	bash testing.sh 
+	bash testing.sh &> testing.out
 
 # valgrind: $(PROG) 
 # 	valgrind ./$(PROG) 

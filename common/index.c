@@ -29,6 +29,16 @@
 #include "../libcs50/file.h"
 #include "index.h"
 #include "word.h"
+#include "pagedir.h"
+
+#ifdef TEST
+void debug(char* input)
+{
+    printf("%s", input); 
+}
+#else 
+void debug(char* input) {}
+#endif
 
 /**************** global types ****************/
 typedef hashtable_t index_t;
@@ -161,6 +171,7 @@ char* updateIndex(char* fp, int i)
  */
 index_t* index_build(char* pagedir) 
 {
+    debug("Running index_build...\n");
     const int tableSize = 200;
     if (pagedir == NULL) {
         return NULL;
@@ -176,6 +187,9 @@ index_t* index_build(char* pagedir)
     // While the file is readable
     FILE* fp;
     while ((fp = fopen(copy, "r")) != NULL) {
+        debug("Trying to read ");
+        debug(copy);
+        debug("\n");
         // Ignore words with less than three characters
         if (lines_in_file(fp) < 3) {
             i++;
@@ -197,6 +211,7 @@ index_t* index_build(char* pagedir)
             fclose(fp);
             break;
         }
+
         // Keep track of current page number
         int pos = 0; 
 
@@ -207,6 +222,9 @@ index_t* index_build(char* pagedir)
                 continue;
             }
             normalizeWord(result);
+            // debug("Parsing through word ");
+            // debug(result);
+            // debug("\n");
 
             // Map from words to (documentID, count)
             counters_t* set = index_find(table, result);
@@ -217,7 +235,7 @@ index_t* index_build(char* pagedir)
                 
                 counters_add(set, i);
                 if(!index_insert(table, result, set)) {
-                    fprintf(stderr, "Failed to insert %s", result);
+                    fprintf(stderr, "Failed to insert %s\n", result);
                 }
             }
             // Increment the word count if the set already exists
@@ -238,6 +256,7 @@ index_t* index_build(char* pagedir)
         copy = updateIndex(pagedir, i);
     }
     free(copy);
+    debug("Finished building index.\n");
     return table;
 }
 
@@ -248,21 +267,23 @@ index_t* index_build(char* pagedir)
  */
 void index_save(index_t* index, char* filename)
 {
+    debug("Trying to save file...\n");
     // Error-handling
     if (index == NULL || filename == NULL) {
-        fprintf(stderr, "invalid input to index_save");
+        fprintf(stderr, "invalid input to index_save\n");
         return;
     }
 
     FILE* fp = fopen(filename, "w");
     if (fp == NULL) {
-        fprintf(stderr, "index_save file would not open");
+        fprintf(stderr, "index_save file would not open\n");
         return;
     }
 
     // Print index to given file
     index_print(index, fp, item_print);
     fclose(fp);
+    debug("Finished saving file.\n");
 }
 
 /**************** index_load ****************/
@@ -275,15 +296,16 @@ index_t* index_load(char* filename)
     // Error-handling
     index_t* index = index_new(10);
     if (index == NULL) {
-        fprintf(stderr, "index_load could not create new index");
+        fprintf(stderr, "index_load could not create new index\n");
         return NULL;
     }
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) {
-        fprintf(stderr, "could not open index_load file");
+        fprintf(stderr, "could not open index_load file\n");
         return NULL;
     }
 
+    debug("Trying to load file...\n");
     char* line = NULL;          // Current line for strtok
     char delim[] = " ";         // Delimiter for strtok
 
@@ -298,13 +320,15 @@ index_t* index_load(char* filename)
         int intID = 0;
         counters_t* set = counters_new();
         if (set == NULL) {
-            fprintf(stderr, "could not instantiate set");
+            fprintf(stderr, "could not instantiate set\n");
             fclose(fp);
             free(line);
             index_delete(index);
             return NULL;
         }
-
+        debug("Reading word ");
+        debug(word);
+        debug("\n");
         // While another docID and corresponding count exists on the given line
         while (((docID = strtok(NULL, delim)) != NULL) && ((count = strtok(NULL,delim)) != NULL)) {
             intCount = atoi(count);
@@ -318,5 +342,6 @@ index_t* index_load(char* filename)
         free(line);
     }
     fclose(fp);
+    debug("Finished loading file.\n");
     return index;
 }

@@ -22,15 +22,6 @@
 #include "../libcs50/webpage.h"
 #include "../libcs50/memory.h"
 
-#ifdef TEST
-void debug(char* input)
-{
-    printf("%s\n", input); 
-}
-#else 
-void debug(char* input) {}
-#endif
-
 /**************** isDirectory ****************/
 /*
  * Checks whether the input string is a valid, writable directory
@@ -78,7 +69,6 @@ char* pagefetcher(webpage_t *page)
 	else { 
         // failed to fetch the page
 		// fprintf(stderr, "failed to fetch %s\n", webpage_getHTML(page));
-        debug("Failed to fetch page");
 		webpage_delete(page);
 		return NULL;
 	}
@@ -96,7 +86,6 @@ bool pagesaver(webpage_t *page, char* pageDir, int id)
     // Allocate memory and copy
     char* num = assertp(malloc(sizeof(id)+1), "pagesaver ID");
     sprintf(num, "%d", id);
-    debug(num);
     char* copy = assertp(malloc(strlen(pageDir)+1+sizeof(id)), "pagesaver pageDir");
     strcpy(copy, pageDir);
     strcat(copy, num);
@@ -105,7 +94,6 @@ bool pagesaver(webpage_t *page, char* pageDir, int id)
     FILE *fp = fopen(copy, "w"); 
 	assertp(fp, "cannot open file for writing\n");
 	fprintf(fp, "%s\n%d\n%s", webpage_getURL(page), webpage_getDepth(page), webpage_getHTML(page));
-    debug(webpage_getURL(page));
 
     // Maintaining logistics -- free and close files
 	fclose(fp);

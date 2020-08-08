@@ -19,6 +19,7 @@
 #include "../libcs50/webpage.h"
 #include "../libcs50/file.h"
 
+
 /**************** global types ****************/
 typedef hashtable_t index_t;
 

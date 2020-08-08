@@ -1,3 +1,16 @@
+/* 
+ * indexer.c - first driver for `index` module
+ *
+ * The indexer reads the documents in a given `directory` outputted by the 
+ * crawler, builds an inverted index mapping from words to document ID and count, 
+ * and writes that index to a file
+ * 
+ * see IMPLEMENTATION and DESIGN spec for more information.
+ *
+ * Irene Lam, August 4, 2020
+ * CS50, Summer 2020
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,11 +26,20 @@
 #include "../common/pagedir.h"
 #include "../common/index.h"
 
-// Function prototypes
-
-// ./indexer pageDirectory indexFilename
+/************** main ***************
+ * Builds an inverted index mapping from words to document ID and count
+ * based on crawler output
+ * 
+ * Inputs:
+ * pageDirectory: the pathname of a directory produced by the Crawler, and
+ * indexFilename: the pathname of a file into which the index should be written
+ * Output: 0 if successful, 1 otherwise
+ * 
+ * Usage: ./indexer pageDirectory indexFilename
+ */
 int main(int argc, char* argv[])
 {
+    // Error-handling
     if (argc < 3) {
         fprintf(stderr, "Insufficient number of arguments\n");
         return 1;
@@ -35,8 +57,22 @@ int main(int argc, char* argv[])
         strcat(dircopy, "/");
     }
 
+    // Check if the given directory is a valid, crawler-generated directory
+    char* pagedir = assertp(malloc(strlen(dircopy)+10), "indexer malloc failed");
+    strcpy(pagedir, dircopy);
+    strcat(pagedir, ".crawler");
+    FILE *dirfile = fopen(pagedir, "r");
+    if (dirfile == NULL) {
+        fprintf(stderr, "Please provide a valid crawler-generated directory\n");
+        free(pagedir);
+        return 1;
+    }
+    free(pagedir);
+    fclose(dirfile);
+
     // Checking validity of page directory (existing & writable)
     if (!isDirectory(dircopy)) {
+        free(dircopy);
         return 1;
     }
 
@@ -52,6 +88,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // Build and save index
     index_t* index = index_build(dircopy);
     index_save(index, fileCopy);
     index_delete(index);
