@@ -78,14 +78,11 @@ The indexer will run as follows:
 4. Save the index into a file using `index_save(file, index)`
     1. Check validity of parameters 
     2. Call `item_print` to print the index data structure into the given file
-5. clean up data structures
+5. Clean up data structures
 ```
 
 **normalize the word** means to change all characters to lower-case.
-As one simple example, 
-`Home`
-becomes
-`home`.
+As one simple example, `Home` becomes `home`.
 
 Please note that the order in which words are displayed when calling `index_save` cannot be guaranteed. This is because `index_t` uses many methods from *hashtable*, which explicitly denies any promise about the order of items traversed.
 
@@ -113,7 +110,7 @@ Two helper modules provide data structures:
 *Integration testing*.  Assemble the indexer and test it as a whole.
 In each case, examine the output files carefully to be sure they count the number of words correctly, contain all words (of 3 or more characters) listed within the files, prints properly, ensure that no words are missing or duplicated, etc.
 
-Prints "progress" indicators from the indexer as it proceeds.
+Prints "progress" indicators from the indexer as it proceeds (e.g. current file being read).
 
 0. Test the program with various forms of incorrect command-line arguments to ensure that its command-line parsing, and validation of those parameters, works correctly.
 
@@ -121,7 +118,7 @@ Prints "progress" indicators from the indexer as it proceeds.
 
 2. Test the indexer with a non-crawler generated `pageDirectory`.
 
-3. Test the indexer with a non-writable `indexFilename`.
+3. Test the indexer with a non-writable `pageDirectory`.
 
 4. Create an index file from a simple, closed set of cross-linked web pages using `indexer`, in which some page(s) are mentioned multiple times within a page, and multiple times across the set of pages.
 
@@ -130,7 +127,9 @@ Compare the result with the respective index file from Professor Zhou. Sort the 
 5. Point the indexer at a page in that site, and explore at depths 0, 1, 2, 3, 4, 5.
 Verify that the files created match expectations using Professor Zhou's files.
 
-6. Point the indexer at our Wikipedia playground. Explore at depths 0, 1, 2.
+6. Point the indexer at the Wikipedia playground. Explore at depths 0, 1, 2.
 Verify that the files created match expectations using Professor Zhou's files.
 
-7. More tests as needed!
+7. More tests as needed! (In this case, on the toscrape playground.)
+
+(Note: Only tests with verifiable results (e.g. available on Professor Zhou's answer key) were tested to ensure the accuracy of results.)

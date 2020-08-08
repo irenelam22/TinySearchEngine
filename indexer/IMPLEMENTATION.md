@@ -160,7 +160,7 @@ The `indexer.c` implementation runs as follows (using C):
 4. Save the index into a file using `index_save(file, index)`
     1. Check validity of parameters 
     2. Call `item_print` to print the index data structure into the given file
-5. clean up data structures
+5. Clean up data structures
 ```
 
 ### Testing plan for indexer

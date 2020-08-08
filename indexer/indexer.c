@@ -65,6 +65,7 @@ int main(int argc, char* argv[])
     if (dirfile == NULL) {
         fprintf(stderr, "Please provide a valid crawler-generated directory\n");
         free(pagedir);
+        free(dircopy);
         return 1;
     }
     free(pagedir);
