@@ -1,0 +1,5 @@
+core
+*.o
+queriertest*
+querier
+querier.h
