@@ -24,10 +24,11 @@
 #include "../common/word.h"
 #include "querier.h"
 
-// Function prototype
-// bool inputCheck(char* dircopy, char* index);
-// int extract_words(char* line, char** words );
-// bool valid_query(char** query, int length);
+/******** local data types *******/
+struct twocts {
+	counters_t *temp;
+	counters_t *curr;
+};
 
 bool inputCheck(char* dircopy, char* index) 
 {
@@ -46,12 +47,10 @@ bool inputCheck(char* dircopy, char* index)
     fclose(dirfile);
 
     // Checking validity of page directory (existing & writable)
-    if (!isDirectory(dircopy)) {
-        free(dircopy);
-        return false;
-    }
-    free(dircopy);
-    // Create memory in heap
+    // if (!isDirectory(dircopy)) {
+    //     free(dircopy);
+    //     return false;
+    // }
 
     FILE* fp = fopen(index, "r");
     
@@ -65,7 +64,7 @@ bool inputCheck(char* dircopy, char* index)
     return true;
 }
 
-void process_query(index_t* index)
+void process_query(index_t* index, char* pagedir)
 {
     /*
     3. read search queries from stdin, one per line, until EOF.
@@ -79,24 +78,39 @@ void process_query(index_t* index)
     (Obtain the URL by reading the first line of the relevant document file from the `pageDirectory`.)
 	8. Exit with zero status when EOF is reached on stdin.
     */
-   char* line = NULL;
-   char** words = assertp(malloc(8*(strlen(line)+1)), "words did not malloc");
-   int length = 0;
-   while ((line = freadlinep(stdin)) != NULL) {
-       length = extract_words(line, words);
-       if (!valid_query(words, length)) {
-           break;
-       }
-   }
+    char* line = NULL;
+    
+    int length = 0;
+    while ((line = freadlinep(stdin)) != NULL) {
+        printf("Query: %s\n", line);
+        // char** words = assertp(malloc(8*(strlen(line)+1)), "words did not malloc");
+        char** words = calloc(sizeof(char*), strlen(line) + 1);
+        length = extract_words(line, words);
+        
+        if (!valid_query(words, length)) {
+            free(words);
+            break;
+        }
+
+        run_query(words, index, pagedir);
+        free(words);
+    }
     
 }
-int extract_words(char* line, char** words )
+int extract_words(char* line, char** words)
 {
-    char* word = NULL;          // Current line for strtok
-    char delim[] = " ";         // Delimiter for strtok
-    int i = 0;
+    char delim[] = " ";                         // Delimiter for strtok
+    char* word = strtok(line, delim);           // Current line for strtok
+    if (word == NULL) {
+        return 0;
+    }
+    
+    int i = 1;
+    normalizeWord(word);
+    words[0] = word;
     while ((word = strtok(NULL, delim)) != NULL) {
-        words[i] = normalizeWord(word);
+        normalizeWord(word);
+        *(words + i) = word;
         i++;
     }
     return i;
@@ -136,4 +150,73 @@ bool valid_query(char** query, int length)
         }
     }
     return true;
+}
+
+void sum_iterate(void *arg, const int key, const int count)
+{
+    counters_t* final = arg;
+  
+    // find the same key in setA
+    int finalcount = counters_get(final, key);
+    if (finalcount == 0) {
+        counters_set(final, key, count);
+    } 
+    else {  
+        counters_set(final, key, finalcount+count);
+    }
+}
+
+int min(const int a, const int b) 
+{
+    return (a < b ? a : b);
+}
+
+void min_iterate(void *arg, const int key, const int count)
+{
+	struct twocts *two = arg; 
+
+	counters_set(two->temp, key, min(count, counters_get(two->curr, key)));
+}
+
+void run_query(char** words, index_t* index, char* pageDirectory) 
+{
+    counters_t* temp = index_find(index, words[0]);
+    counters_t* final = assertp(counters_new(), "run_query counters failed");
+    int i = 0;
+    char* word = NULL;
+    while ((word = words[i]) != NULL) {
+        if (words[i+1] != NULL && (strcmp(words[i+1], "or") == 0)) { // OR
+            counters_iterate(temp, index_find(index, word), sum_iterate);
+            counters_iterate(temp, final, sum_iterate);
+            i+=2;
+            temp = NULL;
+        }
+        else {
+            counters_t* curr = index_find(index, word);
+            if (strcmp(word, "and") == 0) {
+                i++;
+            }
+            else if (temp == NULL) {
+                temp = index_find(index, word);
+                i++;
+            }
+            else { 
+                struct twocts args = {temp, curr}; 
+                counters_iterate(temp, &args, min_iterate);
+                i++;
+            }
+        }
+    }
+    if (temp != NULL ) {
+        counters_iterate(temp, final, sum_iterate);
+    }
+
+    counters_iterate(final, pageDirectory, query_print);
+} 
+
+void query_print(void *arg, const int key, const int count)
+{
+    // webpage_t* page = arg;
+    // mUST PRINT WEBPAGE
+    printf("score %d doc %d:\n", count, key);
 }

@@ -10,7 +10,7 @@ all:
 	make -C common
 	make -C crawler
 	make -C indexer
-	# make -C querier
+	make -C querier
 
 ############## test: make all tests ##########
 test:

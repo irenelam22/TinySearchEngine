@@ -326,9 +326,9 @@ index_t* index_load(char* filename)
             index_delete(index);
             return NULL;
         }
-        debug("Reading word ");
-        debug(word);
-        debug("\n");
+        // debug("Reading word ");
+        // debug(word);
+        // debug("\n");
         // While another docID and corresponding count exists on the given line
         while (((docID = strtok(NULL, delim)) != NULL) && ((count = strtok(NULL,delim)) != NULL)) {
             intCount = atoi(count);

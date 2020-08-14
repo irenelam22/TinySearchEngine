@@ -3,3 +3,6 @@ core
 queriertest*
 querier
 querier.h
+STREAM
+.nfs*
+query.c
