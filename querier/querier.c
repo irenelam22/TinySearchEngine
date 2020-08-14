@@ -35,7 +35,6 @@ struct row {
     int maxcount;
     int* visited;
     int size;
-
 };
 
 bool inputCheck(char* dircopy, char* index) 
@@ -189,7 +188,7 @@ void min_iterate(void *arg, const int key, const int count)
 	counters_set(two->temp, key, min(count, counters_get(two->curr, key)));
 }
 
-void run_query(char** words, index_t* index, char* pageDirectory) 
+void run_query(char** words, index_t* index, char* pagedir) 
 {
     counters_t* temp = NULL;
     counters_t* final = assertp(counters_new(), "run_query counters failed");
@@ -229,8 +228,8 @@ void run_query(char** words, index_t* index, char* pageDirectory)
     if (temp != NULL ) {
         counters_iterate(temp, final, sum_iterate);
     }
-
-    counters_iterate(final, pageDirectory, query_print);
+    selection_sort(final, pagedir);
+    // counters_iterate(final, pageDirectory, query_print);
 } 
 
 void query_print(void *arg, const int key, const int count)
@@ -254,6 +253,7 @@ void selection_sort_helper(void *arg, const int key, const int count)
     }
     if (node->maxcount < count) {
         node->maxcount = count;
+        node->maxkey = key;
     }
 }
 
@@ -264,11 +264,38 @@ void findLength(void *arg, const int key, const int count)
     *key_count += 1;
 }
 
-void selection_sort(counters_t* set)
+void selection_sort(counters_t* set, char* pagedir)
 {
     int length = 0;
     counters_iterate(set, &length, findLength);
     int* visited = assertp(calloc(sizeof(int), length), "selection sort calloc failed");
-    struct row node = {0, 0, visited, 0}; 
-    counters_iterate(set, &node, selection_sort_helper);
+    // maxkey, maxcount, visited, size;
+    struct row node = {0, 0, visited, length}; 
+    for (int pos = 0; pos < length; pos++) {
+        counters_iterate(set, &node, selection_sort_helper);
+        visited[pos] = node.maxkey;
+        if (node.maxcount > 0) {
+            char* num = assertp(malloc(sizeof(node.maxkey)+1), "sort maxkey");
+            sprintf(num, "%d", node.maxkey);
+            char* urlcopy = assertp(malloc(strlen(pagedir)+1+sizeof(node.maxkey)), "sort urlcopy failed");
+            strcpy(urlcopy, pagedir);
+            strcat(urlcopy, num);
+            FILE* fp = fopen(urlcopy, "r");
+            if (fp == NULL) {
+                fprintf(stderr, "sort file could not be opened");
+            }
+            char* url = freadlinep(fp);
+            printf("score %d doc %d: %s\n", node.maxcount, node.maxkey, url);
+            fclose(fp);
+        }
+        else {
+            if (pos == 0) {
+                printf("No documents match.\n");
+            }
+            return;
+        }
+        node.maxkey = 0;
+        node.maxcount = 0;
+    }
+    
 }
