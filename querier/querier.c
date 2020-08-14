@@ -30,6 +30,14 @@ struct twocts {
 	counters_t *curr;
 };
 
+struct row {
+    int maxkey;
+    int maxcount;
+    int* visited;
+    int size;
+
+};
+
 bool inputCheck(char* dircopy, char* index) 
 {
     // Check if the given directory is a valid, crawler-generated directory
@@ -81,6 +89,7 @@ void process_query(index_t* index, char* pagedir)
     char* line = NULL;
     
     int length = 0;
+    printf("Please input your query:\n");
     while ((line = freadlinep(stdin)) != NULL) {
         printf("Query: %s\n", line);
         // char** words = assertp(malloc(8*(strlen(line)+1)), "words did not malloc");
@@ -93,6 +102,8 @@ void process_query(index_t* index, char* pagedir)
         }
 
         run_query(words, index, pagedir);
+        printf("Please input your query:\n");
+
         free(words);
     }
     
@@ -180,13 +191,18 @@ void min_iterate(void *arg, const int key, const int count)
 
 void run_query(char** words, index_t* index, char* pageDirectory) 
 {
-    counters_t* temp = index_find(index, words[0]);
+    counters_t* temp = NULL;
     counters_t* final = assertp(counters_new(), "run_query counters failed");
     int i = 0;
     char* word = NULL;
     while ((word = words[i]) != NULL) {
         if (words[i+1] != NULL && (strcmp(words[i+1], "or") == 0)) { // OR
-            counters_iterate(temp, index_find(index, word), sum_iterate);
+            if (temp == NULL) {
+                temp = index_find(index, word);
+            }
+            else {
+                counters_iterate(temp, index_find(index, word), sum_iterate);
+            }
             counters_iterate(temp, final, sum_iterate);
             i+=2;
             temp = NULL;
@@ -206,6 +222,9 @@ void run_query(char** words, index_t* index, char* pageDirectory)
                 i++;
             }
         }
+        // printf("Printing FINAL and TEMP\n");
+        // counters_print(final, stderr);
+        // counters_print(temp, stderr);
     }
     if (temp != NULL ) {
         counters_iterate(temp, final, sum_iterate);
@@ -218,5 +237,38 @@ void query_print(void *arg, const int key, const int count)
 {
     // webpage_t* page = arg;
     // mUST PRINT WEBPAGE
-    printf("score %d doc %d:\n", count, key);
+
+    if (count > 0) {
+        printf("score %d doc %d:\n", count, key);
+    }
+}
+
+// arg = countersnode_t
+void selection_sort_helper(void *arg, const int key, const int count)
+{
+    struct row* node = arg;
+    for (int i = 0; i < node->size; i++) {
+        if (key == node->visited[i]) {
+            return;
+        }
+    }
+    if (node->maxcount < count) {
+        node->maxcount = count;
+    }
+}
+
+void findLength(void *arg, const int key, const int count)
+{
+    int* key_count = arg;
+    (void)key_count;
+    *key_count += 1;
+}
+
+void selection_sort(counters_t* set)
+{
+    int length = 0;
+    counters_iterate(set, &length, findLength);
+    int* visited = assertp(calloc(sizeof(int), length), "selection sort calloc failed");
+    struct row node = {0, 0, visited, 0}; 
+    counters_iterate(set, &node, selection_sort_helper);
 }
