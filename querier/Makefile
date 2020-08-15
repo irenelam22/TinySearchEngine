@@ -14,25 +14,18 @@ CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I../common -I../libcs50
 CC = gcc 
 MAKE = make
 
-.PHONY: test valgrind clean all
+.PHONY: test clean all
 
 all: $(PROG)
 
 fuzzquery: fuzzquery.o $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@
 
-# querier: querier.o query.o $(LIBS)
 querier: querier.o $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@
 
-# queriertest: queriertest.o querier.o $(LIBS)
-# 	$(CC) $(CFLAGS) $^ -o $@
-
 test:
 	bash testing.sh &> testing.out
-
-# valgrind: $(PROG) 
-# 	valgrind ./$(PROG) 
 
 clean:
 	rm -rf *.dSYM  # MacOS debugger info

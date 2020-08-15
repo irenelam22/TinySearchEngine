@@ -57,6 +57,7 @@ I assumed the order of docIDs after sorting does not matter (according to slack)
 
 * `Makefile` - compilation procedure
 * `querier.c` - the implementation for querier
+* `querier.h` - the header file for querier 
 * `testing.sh` - integration testing driver
 * `testing.out` - test data
 * `IMPLEMENTATION.md` - implementation details 

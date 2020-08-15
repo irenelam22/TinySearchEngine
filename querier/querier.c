@@ -24,20 +24,6 @@
 #include "../common/word.h"
 #include "querier.h"
 
-// Function prototype
-void query_print(void *arg, const int key, const int count);
-bool inputCheck(char* dircopy, char* index);
-int extract_words(char* line, char** words );
-bool valid_query(char** query, int length);
-void process_query(index_t* index, char* pagedir);
-void sum_iterate(void *arg, const int key, const int count);
-void min_iterate(void *arg, const int key, const int count);
-void run_query(char** words, index_t* index, char* url) ;
-void query_print(void *arg, const int key, const int count);
-
-void selection_sort(counters_t* set, char* url);
-void findLength(void *arg, const int key, const int count);
-void selection_sort_helper(void *arg, const int key, const int count);
 
 /******** local data types *******/
 struct twocts {
@@ -129,10 +115,14 @@ void process_query(index_t* index, char* pagedir)
     int length = 0;
     printf("Please input your query:\n");
     while ((line = freadlinep(stdin)) != NULL) {
-        printf("Query: %s\n", line);
         char** words = calloc(sizeof(char*), strlen(line) + 1);
         length = extract_words(line, words);
-        
+        printf("Query:");
+        for (int i = 0; i < length; i++) {
+            printf(" %s", words[i]);
+        }
+        printf("\n");
+
         if (!valid_query(words, length)) {
             free(words);
             free(line);
@@ -263,6 +253,9 @@ void run_query(char** words, index_t* index, char* pagedir)
             }
             else if (temp == NULL) {
                 temp = index_find(index, word);
+                if (temp == NULL) {
+                    temp = counters_new();
+                }
                 i++;
             }
             else { 
@@ -322,6 +315,7 @@ void selection_sort(counters_t* set, char* pagedir)
     }
 
     int* visited = assertp(calloc(sizeof(int), length), "selection sort calloc failed");
+    printf("Matches %d documents (ranked):\n", length);
     // maxkey, maxcount, visited, size;
     struct row node = {0, 0, visited, length}; 
     for (int pos = 0; pos < length; pos++) {

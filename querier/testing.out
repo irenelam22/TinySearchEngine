@@ -23,12 +23,14 @@ Please provide a valid crawler-generated directory
 Error-handling: Testing querier on crawler directory with a backslash
 Please input your query:
 Query: playground
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
 Querier continues if there already is a backslash
 Error-handling: Testing querier on crawler directory without a backslash
 Please input your query:
 Query: playground
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
 Querier adds a backslash if doesn't already exist
@@ -39,46 +41,44 @@ Error caught: Directory must be readable
 Testing querier on edge cases for letters at depth 6
 Testing querier on empty query
 Please input your query:
-Query: 
-Error-handling: Querier does nothing and continues on empty query
+Query:Error-handling: Querier does nothing and continues on empty query
 Testing querier on whitespace
 Please input your query:
-Query:    
-Error-handling: Querier does nothing and continues on query of only whitespace
+Query:Error-handling: Querier does nothing and continues on query of only whitespace
 Testing querier with a starting operator
 Error: 'and' cannot be first
 Please input your query:
-Query: AND playground
+Query: and playground
 Error-handling: Querier does not allow AND to be first in the query
 Error: 'or' cannot be first
 Please input your query:
-Query: OR playground
+Query: or playground
 Error-handling: Querier does not allow OR to be first in the query
 Testing querier with an ending operator
 Error: 'and' cannot be last
 Please input your query:
-Query: playground AND
+Query: playground and
 Error-handling: Querier does not allow AND to be last in the query
 Error: 'or' cannot be last
 Please input your query:
-Query: playground OR
+Query: playground or
 Error-handling: Querier does not allow OR to be last in the query
 Testing querier with consecutive operators
 Error: 'and' and 'or' cannot be adjacent
 Please input your query:
-Query: playground AND OR playground
+Query: playground and or playground
 Error-handling: Querier does not allow AND and OR to be consecutive
 Error: 'and' and 'and' cannot be adjacent
 Please input your query:
-Query: playground AND AND playground
+Query: playground and and playground
 Error-handling: Querier does not allow AND and AND to be consecutive
 Error: 'or' and 'or' cannot be adjacent
 Please input your query:
-Query: playground OR OR playground
+Query: playground or or playground
 Error-handling: Querier does not allow OR and OR to be consecutive
 Error: 'or' and 'and' cannot be adjacent
 Please input your query:
-Query: playground OR AND playground
+Query: playground or and playground
 Error-handling: Querier does not allow OR and AND to be consecutive
 Testing querier on words not in file
 Please input your query:
@@ -94,6 +94,9 @@ Please input your query:
 Query: words
 No documents match.
 Please input your query:
+Query: tiny search engine
+No documents match.
+Please input your query:
 Error-handling: Querier returns 'No documents match.' for words it cannot find.
 Testing querier on non-letter characters
 Error: bad character '-' in query
@@ -107,7 +110,7 @@ Query: non-letters
 Query: numb3rs
 Query: exclamation!
 Query: question?
-Query: MATH+
+Query: math+
 Query: etc...
 Error-handling: Querier does not allow non-letter characters.
 ==========================================================
@@ -115,12 +118,15 @@ Basic querier tests on letters at depth 6
 Testing querier on one word
 Please input your query:
 Query: page
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
 Query: coding
+Matches 1 documents (ranked):
 score   1 doc   6: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/H.html
 Please input your query:
 Query: for
+Matches 9 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 score   1 doc   2: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/A.html
 score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
@@ -132,43 +138,53 @@ score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 score   1 doc   9: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/C.html
 Please input your query:
 Query: computational
+Matches 1 documents (ranked):
 score   1 doc   9: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/C.html
 Please input your query:
 Query: eniac
+Matches 1 documents (ranked):
 score   1 doc   4: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/E.html
 Please input your query:
 Testing querier on basic conjunctions
 Please input your query:
-Query: playground OR depth
+Query: playground or depth
+Matches 2 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 Please input your query:
-Query: depth OR playground
+Query: depth or playground
+Matches 2 documents (ranked):
 score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
-Query: playground AND biology
+Query: playground and biology
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
-Query: playground AND page
+Query: playground and page
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
 Testing conjunction precedence
 Please input your query:
-Query: transform page OR depth OR this OR computational huffman
+Query: transform page or depth or this or computational huffman
+Matches 4 documents (ranked):
 score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
 score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 score   1 doc   9: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/C.html
 Please input your query:
-Query: depth OR transform page OR depth
+Query: depth or transform page or depth
+Matches 2 documents (ranked):
 score   2 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
 Please input your query:
-Query: transform page OR random
+Query: transform page or random
+Matches 1 documents (ranked):
 score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
 Please input your query:
-Query: for home depth OR eniac OR search
+Query: for home depth or eniac or search
+Matches 9 documents (ranked):
 score   2 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
 score   2 doc   4: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/E.html
 score   2 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
@@ -183,20 +199,23 @@ Testing querier with fuzzquery
 ./fuzzquery: generating 10 queries from 22 words
 Error: bad character '-' in query
 Please input your query:
-Query: Ingold 
+Query: ingold
 No documents match.
 Please input your query:
-Query: transform page OR depth OR this OR computational huffman 
+Query: transform page or depth or this or computational huffman
+Matches 4 documents (ranked):
 score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
 score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 score   1 doc   9: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/C.html
 Please input your query:
-Query: traversal home OR biology 
+Query: traversal home or biology
+Matches 2 documents (ranked):
 score   1 doc   5: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/G.html
 score   1 doc   9: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/C.html
 Please input your query:
-Query: for AND for biology the 
+Query: for and for biology the
+Matches 9 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 score   1 doc   2: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/A.html
 score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
@@ -207,26 +226,25 @@ score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
 score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 score   1 doc   9: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/C.html
 Please input your query:
-Query: start-off 
-Query: graph graph OR fast fourier OR depth computational 
+Query: start-off
+Query: graph graph or fast fourier or depth computational
+Matches 3 documents (ranked):
 score   1 doc   5: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/G.html
 score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
 score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 Please input your query:
-Query: syringotome AND coding 
-score   1 doc   6: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/H.html
-Please input your query:
-Query: thegnly AND depth breadth OR vindications OR transform 
-score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
-score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
-Please input your query:
-Query: breadth traversal AND page algorithm traversal uroscopic 
+Query: syringotome and coding
 No documents match.
 Please input your query:
-Query: expressionful the AND coding OR Walston search 
-score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
-score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
-score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
+Query: thegnly and depth breadth or vindications or transform
+Matches 1 documents (ranked):
+score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
+Please input your query:
+Query: breadth traversal and page algorithm traversal uroscopic
+No documents match.
+Please input your query:
+Query: expressionful the and coding or walston search
+No documents match.
 Please input your query:
 Manually checked that all of the above results produce the expected results
 ==========================================================
@@ -234,9 +252,11 @@ Querier tests on toscrape at depth 0, 1, 2
 Testing querier on toscrape at depth 0
 Please input your query:
 Query: historical or randomly trade or basket
+Matches 1 documents (ranked):
 score   23 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/index.html
 Please input your query:
 Query: health or drawing or laws hard and found praise
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/index.html
 Please input your query:
 Query: published berry or florence or entertaining fiercest
@@ -245,6 +265,7 @@ Please input your query:
 Testing querier on toscrape at depth 1
 Please input your query:
 Query: historical or randomly trade or basket
+Matches 73 documents (ranked):
 score   26 doc   70: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/category/books/historical-fiction_4/index.html
 score   23 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/index.html
 score   23 doc   2: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/page-2.html
@@ -320,6 +341,7 @@ score   3 doc   20: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/cata
 score   1 doc   22: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
 Please input your query:
 Query: health or drawing or laws hard and found praise
+Matches 57 documents (ranked):
 score   4 doc   27: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/category/books/health_47/index.html
 score   2 doc   12: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html
 score   2 doc   49: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/category/books/art_25/index.html
@@ -379,12 +401,14 @@ score   1 doc   14: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/cata
 score   1 doc   18: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/sapiens-a-brief-history-of-humankind_996/index.html
 Please input your query:
 Query: published berry or florence or entertaining fiercest
+Matches 2 documents (ranked):
 score   1 doc   5: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
 score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
 Please input your query:
 Testing querier on toscrape at depth 2
 Please input your query:
 Query: historical or randomly trade or basket
+Matches 585 documents (ranked):
 score   26 doc   532: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/category/books/historical-fiction_4/index.html
 score   24 doc   512: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/category/books/sequential-art_5/page-2.html
 score   23 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/index.html
@@ -972,6 +996,7 @@ score   3 doc   42: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/cata
 score   1 doc   44: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/a-light-in-the-attic_1000/index.html
 Please input your query:
 Query: health or drawing or laws hard and found praise
+Matches 105 documents (ranked):
 score   8 doc   56: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/10-day-green-smoothie-cleanse-lose-up-to-15-pounds-in-10-days_581/index.html
 score   8 doc   219: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-new-drawing-on-the-right-side-of-the-brain_550/index.html
 score   7 doc   207: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/8-keys-to-mental-health-through-exercise_114/index.html
@@ -1079,6 +1104,7 @@ score   1 doc   160: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/cat
 score   1 doc   397: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-book-of-mormon_571/index.html
 Please input your query:
 Query: published berry or florence or entertaining fiercest
+Matches 37 documents (ranked):
 score   4 doc   578: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-great-railway-bazaar_446/index.html
 score   3 doc   134: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/barefoot-contessa-back-to-basics_667/index.html
 score   2 doc   166: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-stand_282/index.html
@@ -1122,13 +1148,16 @@ Manually checked that all of the above results produce the expected results
 Querier tests on wikipedia at depth 0, 1, 2
 Testing querier on wikipedia at depth 0
 Please input your query:
-Query: design open source 
+Query: design open source
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
 Query: design open source or free
+Matches 1 documents (ranked):
 score   7 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
 Query: dartmouth college
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
 Query: uses compatible and translation or permanent
@@ -1142,7 +1171,8 @@ No documents match.
 Please input your query:
 Testing querier on wikipedia at depth 1
 Please input your query:
-Query: design open source 
+Query: design open source
+Matches 7 documents (ranked):
 score   18 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Computer_science.html
 score   13 doc   4: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Dartmouth_College.html
 score   6 doc   5: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Unix.html
@@ -1152,6 +1182,7 @@ score   2 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Hash
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
 Query: design open source or free
+Matches 7 documents (ranked):
 score   22 doc   5: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Unix.html
 score   21 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Computer_science.html
 score   19 doc   4: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Dartmouth_College.html
@@ -1161,11 +1192,13 @@ score   7 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/inde
 score   7 doc   2: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Linked_list.html
 Please input your query:
 Query: dartmouth college
+Matches 3 documents (ranked):
 score   416 doc   4: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Dartmouth_College.html
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Computer_science.html
 Please input your query:
 Query: uses compatible and translation or permanent
+Matches 6 documents (ranked):
 score   15 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Hash_table.html
 score   11 doc   4: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Dartmouth_College.html
 score   7 doc   2: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Linked_list.html
@@ -1174,16 +1207,17 @@ score   4 doc   5: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Unix
 score   2 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Computer_science.html
 Please input your query:
 Query: landscape novelist or departure
+Matches 2 documents (ranked):
 score   3 doc   4: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Dartmouth_College.html
 score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Computer_science.html
 Please input your query:
 Query: rinpoche or nexptime or elif and universal
-score   2 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Hash_table.html
-score   1 doc   6: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/C_(programming_language).html
+No documents match.
 Please input your query:
 Testing querier on wikipedia at depth 2
 Please input your query:
-Query: design open source 
+Query: design open source
+Matches 769 documents (ranked):
 score   264 doc   1432: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Sustainable_design.html
 score   187 doc   1437: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Ecological_design.html
 score   142 doc   187: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Graceful_degradation.html
@@ -1955,6 +1989,7 @@ score   1 doc   1648: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/H
 score   1 doc   1661: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Stepped_Reckoner.html
 Please input your query:
 Query: design open source or free
+Matches 1675 documents (ranked):
 score   268 doc   1432: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Sustainable_design.html
 score   195 doc   1032: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Free_software.html
 score   190 doc   1437: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Ecological_design.html
@@ -3632,6 +3667,7 @@ score   3 doc   1667: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/H
 score   3 doc   1673: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Computational_problem.html
 Please input your query:
 Query: dartmouth college
+Matches 300 documents (ranked):
 score   416 doc   212: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Dartmouth_College.html
 score   284 doc   293: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/The_Tabard_(fraternity).html
 score   284 doc   591: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Dartmouth_College_Greek_organizations.html
@@ -3934,6 +3970,7 @@ score   1 doc   1630: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/M
 score   1 doc   1666: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Algorithm.html
 Please input your query:
 Query: uses compatible and translation or permanent
+Matches 1674 documents (ranked):
 score   24 doc   1624: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Entertainment.html
 score   21 doc   1482: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Grid_computing.html
 score   19 doc   1286: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Curly_braces.html
@@ -5610,6 +5647,7 @@ score   1 doc   1673: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/C
 score   1 doc   1675: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Computation.html
 Please input your query:
 Query: landscape novelist or departure
+Matches 175 documents (ranked):
 score   24 doc   1434: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Landscape_engineering.html
 score   20 doc   1432: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Sustainable_design.html
 score   10 doc   1437: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Ecological_design.html
@@ -5787,6 +5825,7 @@ score   1 doc   1595: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/P
 score   1 doc   1637: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Cryptanalysis_of_the_Enigma.html
 Please input your query:
 Query: rinpoche or nexptime or elif and universal
+Matches 12 documents (ranked):
 score   4 doc   1335: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/ALGOL_68.html
 score   3 doc   19: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Binary_search_tree.html
 score   2 doc   1638: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/Intractably.html
@@ -5806,20 +5845,25 @@ Fuzz tests on miscellaneous files
 Fuzz tests on letters at depth 2
 ./fuzzquery: generating 5 queries from 11 words
 Please input your query:
-Query: tse 
+Query: tse
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
-Query: breadth 
+Query: breadth
+Matches 1 documents (ranked):
 score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
 Please input your query:
-Query: the 
+Query: the
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 Please input your query:
-Query: search page OR algorithm AND this OR page 
+Query: search page or algorithm and this or page
+Matches 2 documents (ranked):
 score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
 score   1 doc   2: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/A.html
 Please input your query:
-Query: tse OR home 
+Query: tse or home
+Matches 3 documents (ranked):
 score   3 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
 score   1 doc   2: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/A.html
 score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
@@ -5827,13 +5871,16 @@ Please input your query:
 Fuzz tests on toscrape at depth 2
 ./fuzzquery: generating 5 queries from 13563 words
 Please input your query:
-Query: ingredient 
+Query: ingredient
+Matches 1 documents (ranked):
 score   1 doc   139: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-love-and-lemons-cookbook-an-apple-to-zucchini-celebration-of-impromptu-cooking_849/index.html
 Please input your query:
-Query: strengthens 
+Query: strengthens
+Matches 1 documents (ranked):
 score   1 doc   83: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/if-i-gave-you-gods-phone-number-searching-for-spirituality-in-america_564/index.html
 Please input your query:
-Query: island 
+Query: island
+Matches 32 documents (ranked):
 score   7 doc   576: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-road-to-little-dribbling-adventures-of-an-american-in-britain-notes-from-a-small-island-2_277/index.html
 score   6 doc   286: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/searching-for-meaning-in-gailana_648/index.html
 score   5 doc   381: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/call-the-nurse-true-stories-of-a-country-nurse-on-a-scottish-isle_885/index.html
@@ -5867,13 +5914,15 @@ score   1 doc   557: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/cat
 score   1 doc   558: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/playing-with-fire_602/index.html
 score   1 doc   559: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-widow_609/index.html
 Please input your query:
-Query: emptied bracing OR fitness AND bryson OR instilled 
+Query: emptied bracing or fitness and bryson or instilled
+Matches 4 documents (ranked):
 score   4 doc   207: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/8-keys-to-mental-health-through-exercise_114/index.html
 score   2 doc   166: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-stand_282/index.html
 score   2 doc   504: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/candide_316/index.html
 score   1 doc   320: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/judo-seven-steps-to-black-belt-an-introductory-guide-for-beginners_903/index.html
 Please input your query:
-Query: restricted OR explanation 
+Query: restricted or explanation
+Matches 3 documents (ranked):
 score   2 doc   55: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-art-and-science-of-low-carbohydrate-living_570/index.html
 score   2 doc   246: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/the-grand-design_405/index.html
 score   1 doc   197: http://old-www.cs.dartmouth.edu/~cs50/data/tse/toscrape/catalogue/a-heartbreaking-work-of-staggering-genius_115/index.html
@@ -5881,19 +5930,24 @@ Please input your query:
 Fuzz tests on wikipedia at depth 0
 ./fuzzquery: generating 5 queries from 41 words
 Please input your query:
-Query: hash 
+Query: hash
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
-Query: amp 
+Query: amp
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
-Query: made 
+Query: made
+Matches 1 documents (ranked):
 score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
-Query: other copy OR source AND hash OR sites 
+Query: other copy or source and hash or sites
+Matches 1 documents (ranked):
 score   3 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
-Query: science OR computer 
+Query: science or computer
+Matches 1 documents (ranked):
 score   2 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/wikipedia/index.html
 Please input your query:
 ================== End of testing.sh ==================
