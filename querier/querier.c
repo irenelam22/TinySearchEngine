@@ -97,6 +97,7 @@ void process_query(index_t* index, char* pagedir)
         
         if (!valid_query(words, length)) {
             free(words);
+            free(line);
             break;
         }
 
@@ -104,6 +105,7 @@ void process_query(index_t* index, char* pagedir)
         printf("Please input your query:\n");
 
         free(words);
+        free(line);
     }
     
 }
@@ -229,6 +231,7 @@ void run_query(char** words, index_t* index, char* pagedir)
         counters_iterate(temp, final, sum_iterate);
     }
     selection_sort(final, pagedir);
+    counters_delete(final);
     // counters_iterate(final, pageDirectory, query_print);
 } 
 
@@ -287,15 +290,19 @@ void selection_sort(counters_t* set, char* pagedir)
             char* url = freadlinep(fp);
             printf("score %d doc %d: %s\n", node.maxcount, node.maxkey, url);
             fclose(fp);
+            free(num);
+            free(urlcopy);
+            free(url);
         }
         else {
             if (pos == 0) {
                 printf("No documents match.\n");
             }
+            free(visited);
             return;
         }
         node.maxkey = 0;
         node.maxcount = 0;
     }
-    
+    free(visited);
 }
