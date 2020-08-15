@@ -202,7 +202,9 @@ void run_query(char** words, index_t* index, char* pagedir)
                 temp = index_find(index, word);
             }
             else {
-                counters_iterate(temp, index_find(index, word), sum_iterate);
+                struct twocts args = {temp, index_find(index, word)}; 
+                counters_iterate(temp, &args, min_iterate);
+                // counters_iterate(temp, final, sum_iterate);
             }
             counters_iterate(temp, final, sum_iterate);
             i+=2;
@@ -263,14 +265,20 @@ void selection_sort_helper(void *arg, const int key, const int count)
 void findLength(void *arg, const int key, const int count)
 {
     int* key_count = arg;
-    (void)key_count;
-    *key_count += 1;
+    if (count > 0) {
+        *key_count += 1;
+    }
 }
 
 void selection_sort(counters_t* set, char* pagedir)
 {
     int length = 0;
     counters_iterate(set, &length, findLength);
+    if (length == 0) {
+        printf("No documents match.\n");
+        return;
+    }
+
     int* visited = assertp(calloc(sizeof(int), length), "selection sort calloc failed");
     // maxkey, maxcount, visited, size;
     struct row node = {0, 0, visited, length}; 
@@ -293,13 +301,6 @@ void selection_sort(counters_t* set, char* pagedir)
             free(num);
             free(urlcopy);
             free(url);
-        }
-        else {
-            if (pos == 0) {
-                printf("No documents match.\n");
-            }
-            free(visited);
-            return;
         }
         node.maxkey = 0;
         node.maxcount = 0;
