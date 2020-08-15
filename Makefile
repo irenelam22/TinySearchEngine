@@ -15,13 +15,14 @@ all:
 ############## test: make all tests ##########
 test:
 	# make -C crawler test
-	make -C indexer test
+	# make -C indexer test
+	make -C querier test
 
 ############## valgrind all programs ##########
 valgrind: all
 	make -C crawler valgrind
 	make -C indexer valgrind
-	# make -C querier valgrind
+	make -C querier valgrind
 
 ############## clean  ##########
 clean:
@@ -30,4 +31,4 @@ clean:
 	make -C common clean
 	make -C crawler clean
 	make -C indexer clean
-	# make -C querier clean
+	make -C querier clean

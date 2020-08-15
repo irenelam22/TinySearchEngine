@@ -11,7 +11,7 @@ LIB = common.a
 # uncomment the following to turn on verbose memory logging
 #TESTING=-DMEMTEST
 
-CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I ../libcs50 -DTEST
+CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I ../libcs50
 CC = gcc
 MAKE = make
 

@@ -1,0 +1,1 @@
+Write a file IMPLEMENTATION.md to provide the implementation spec and testing plan for querier.

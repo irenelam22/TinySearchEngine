@@ -1,6 +1,6 @@
 # Makefile for 'indexer' module
 #
-# Irene Lam, August 3, 2020
+# Irene Lam, August 15, 2020
 # CS50, Summer 2020
 
 PROG = querier fuzzquery
@@ -21,15 +21,15 @@ all: $(PROG)
 fuzzquery: fuzzquery.o $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@
 
-querier: querier.o query.o $(LIBS)
+# querier: querier.o query.o $(LIBS)
+querier: querier.o $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@
 
-queriertest: queriertest.o querier.o $(LIBS)
-	$(CC) $(CFLAGS) $^ -o $@
+# queriertest: queriertest.o querier.o $(LIBS)
+# 	$(CC) $(CFLAGS) $^ -o $@
 
 test:
-	queriertest
-	#bash testing.sh &> testing.out
+	bash testing.sh &> testing.out
 
 # valgrind: $(PROG) 
 # 	valgrind ./$(PROG) 
@@ -38,4 +38,4 @@ clean:
 	rm -rf *.dSYM  # MacOS debugger info
 	rm -f *~ *.o
 	rm -f $(PROG)
-	#rm -rf ../data* ../garbage*
+	rm -r ../querygarbage ../queryWithoutRead

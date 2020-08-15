@@ -1,0 +1,1 @@
+Write a file DESIGN.md to provide the Design Spec for querier, drawing inspiration from the lecture notes.

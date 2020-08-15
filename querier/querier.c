@@ -24,6 +24,21 @@
 #include "../common/word.h"
 #include "querier.h"
 
+// Function prototype
+void query_print(void *arg, const int key, const int count);
+bool inputCheck(char* dircopy, char* index);
+int extract_words(char* line, char** words );
+bool valid_query(char** query, int length);
+void process_query(index_t* index, char* pagedir);
+void sum_iterate(void *arg, const int key, const int count);
+void min_iterate(void *arg, const int key, const int count);
+void run_query(char** words, index_t* index, char* url) ;
+void query_print(void *arg, const int key, const int count);
+
+void selection_sort(counters_t* set, char* url);
+void findLength(void *arg, const int key, const int count);
+void selection_sort_helper(void *arg, const int key, const int count);
+
 /******** local data types *******/
 struct twocts {
 	counters_t *temp;
@@ -36,6 +51,49 @@ struct row {
     int* visited;
     int size;
 };
+
+/************** main ***************
+ * 
+ * Inputs:
+ * pageDirectory: the pathname of a directory produced by the Crawler, and
+ * indexFilename: the pathname of a file produced by the Indexer.
+ * Output: 0 if successful, 1 otherwise
+ * 
+ * Usage: ./querier pageDirectory indexFilename
+ * ie: ~cs50/data/tse-output/letters-depth-6 ~cs50/data/tse-output/letters-index-6 < STREAM 
+ */ 
+
+int main(int argc, char* argv[])
+{
+    // Error-handling
+    if (argc < 3) {
+        fprintf(stderr, "Insufficient number of arguments\n");
+        return 1;
+    }
+    if (argc > 3) {
+        fprintf(stderr, "Too many arguments provided\n");
+        return 1;
+    }
+    
+    char* dircopy = assertp(malloc(strlen(argv[1])+10), "dir copy");
+    strcpy(dircopy, argv[1]);
+
+    // Add a backslash to the end of the directory if needed
+    if (dircopy[strlen(dircopy)-1] != '/') {
+        strcat(dircopy, "/");
+    }
+
+    if (!inputCheck(dircopy, argv[2])) {
+        return 1;
+    }
+
+    index_t* index = index_load(argv[2]);
+    process_query(index, dircopy);
+
+    free(dircopy);
+    index_delete(index);
+    return 0;
+}
 
 bool inputCheck(char* dircopy, char* index) 
 {
@@ -53,12 +111,6 @@ bool inputCheck(char* dircopy, char* index)
     free(pagedir);
     fclose(dirfile);
 
-    // Checking validity of page directory (existing & writable)
-    // if (!isDirectory(dircopy)) {
-    //     free(dircopy);
-    //     return false;
-    // }
-
     FILE* fp = fopen(index, "r");
     
     if (fp == NULL) {
@@ -66,32 +118,18 @@ bool inputCheck(char* dircopy, char* index)
         return false;
     }
 
-    // Build and save index
     fclose(fp);
     return true;
 }
 
 void process_query(index_t* index, char* pagedir)
 {
-    /*
-    3. read search queries from stdin, one per line, until EOF.
-	4. clean and parse each query according to the *syntax* described below.
-	5. if the query syntax is somehow invalid, print an error message, do not perform the query, and prompt for the next query.
-	5. print the 'clean' query for user to see.
-	5. use the index to identify the set of documents that *satisfy* the query, as described below.
-	6. if the query is empty (no words), print nothing.
-	6. if no documents satisfy the query, print `No documents match.`
-	7. otherwise, rank the resulting set of documents according to its *score*, as described below, and print the set of documents in decreasing rank order; for each, list the score, document ID and URL.
-    (Obtain the URL by reading the first line of the relevant document file from the `pageDirectory`.)
-	8. Exit with zero status when EOF is reached on stdin.
-    */
     char* line = NULL;
     
     int length = 0;
     printf("Please input your query:\n");
     while ((line = freadlinep(stdin)) != NULL) {
         printf("Query: %s\n", line);
-        // char** words = assertp(malloc(8*(strlen(line)+1)), "words did not malloc");
         char** words = calloc(sizeof(char*), strlen(line) + 1);
         length = extract_words(line, words);
         
@@ -132,12 +170,20 @@ bool valid_query(char** query, int length)
 {
     char* adjacent = NULL;
     char* currWord = NULL;
-    if (length > 0) {
-        if ((strcmp(query[0], "and") == 0) || (strcmp(query[0], "or") == 0)) {
-            fprintf(stderr, "Error: %s cannot be first\n", query[0]);
-            return false;
-        }
+    if (length == 0) {
+        return false;   // Do nothing
     }
+    
+    if ((strcmp(query[0], "and") == 0) || (strcmp(query[0], "or") == 0)) {
+        fprintf(stderr, "Error: '%s' cannot be first\n", query[0]);
+        return false;
+    }
+
+    if ((strcmp(query[length-1], "and") == 0) || (strcmp(query[length-1], "or") == 0)) {
+        fprintf(stderr, "Error: '%s' cannot be last\n", query[length-1]);
+        return false;
+    }
+    
     for (int i = 0; i < length; i++) {
         currWord = query[i];
         if (adjacent != NULL) {
@@ -183,10 +229,10 @@ int min(const int a, const int b)
     return (a < b ? a : b);
 }
 
+// WRITES TO THE SECOND 
 void min_iterate(void *arg, const int key, const int count)
 {
-	struct twocts *two = arg; 
-
+	struct twocts *two = arg;
 	counters_set(two->temp, key, min(count, counters_get(two->curr, key)));
 }
 
@@ -202,9 +248,9 @@ void run_query(char** words, index_t* index, char* pagedir)
                 temp = index_find(index, word);
             }
             else {
-                struct twocts args = {temp, index_find(index, word)}; 
-                counters_iterate(temp, &args, min_iterate);
-                // counters_iterate(temp, final, sum_iterate);
+                counters_t* curr = index_find(index, word);
+                struct twocts args = {curr, temp}; 
+                counters_iterate(curr, &args, min_iterate);
             }
             counters_iterate(temp, final, sum_iterate);
             i+=2;
@@ -220,8 +266,8 @@ void run_query(char** words, index_t* index, char* pagedir)
                 i++;
             }
             else { 
-                struct twocts args = {temp, curr}; 
-                counters_iterate(temp, &args, min_iterate);
+                struct twocts args = {curr, temp}; 
+                counters_iterate(curr, &args, min_iterate);
                 i++;
             }
         }
@@ -239,15 +285,11 @@ void run_query(char** words, index_t* index, char* pagedir)
 
 void query_print(void *arg, const int key, const int count)
 {
-    // webpage_t* page = arg;
-    // mUST PRINT WEBPAGE
-
     if (count > 0) {
         printf("score %d doc %d:\n", count, key);
     }
 }
 
-// arg = countersnode_t
 void selection_sort_helper(void *arg, const int key, const int count)
 {
     struct row* node = arg;
@@ -296,7 +338,7 @@ void selection_sort(counters_t* set, char* pagedir)
                 fprintf(stderr, "sort file could not be opened");
             }
             char* url = freadlinep(fp);
-            printf("score %d doc %d: %s\n", node.maxcount, node.maxkey, url);
+            printf("score   %d doc   %d: %s\n", node.maxcount, node.maxkey, url);
             fclose(fp);
             free(num);
             free(urlcopy);
