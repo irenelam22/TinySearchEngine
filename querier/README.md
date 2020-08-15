@@ -51,6 +51,8 @@ As per my previous conversation with TA Katherine Taylor, I assumed that the `IM
 
 I assumed unit testing is not required for this lab.
 
+I assumed the order of docIDs after sorting does not matter (according to slack). The docIDs therefore display based on the order of the words in stdin, and next on their initial order in the index file.
+
 ### Files
 
 * `Makefile` - compilation procedure
@@ -66,6 +68,7 @@ I assumed unit testing is not required for this lab.
 * `MISSING_WORDS` - Testing with words not in letters at depth 6
 * `ONE_WORD_TEST` - Testing with one words for letters at depth 6
 * `PRECEDENCE_TEST` - Testing with multiple conjunctions to test precedence for letters at depth 6
+* `NON_LETTERS` - Testing with non-letter characters (e.g. -,+,!)
 * `TOSCRAPE_TEST` - Testing multiple examples for toscrape, applicable for depths 0, 1, 2
 * `WIKIPEDIA_TEST` - Testing multiple examples for wikipedia, applicable for depths 0, 1, 2
 

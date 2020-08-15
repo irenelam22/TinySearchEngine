@@ -3,6 +3,8 @@ make[2]: Nothing to be done for 'all'.
 make[2]: Leaving directory '/net/ifs-users/ilam/cs50/labs/tse-irenelam22/querier'
 Integration testing for querier module.
 PLEASE ensure you have tse-output downloading before running the below script.
+Note that errors were printed to stderr, while normal output was printed to stdout.
+Certain messages may not align for this reason.
 For details on how to download tse-output, please see the general README.
 Please use valgrind to check for memory leaks
 ==========================================================
@@ -93,6 +95,21 @@ Query: words
 No documents match.
 Please input your query:
 Error-handling: Querier returns 'No documents match.' for words it cannot find.
+Testing querier on non-letter characters
+Error: bad character '-' in query
+Error: bad character '3' in query
+Error: bad character '!' in query
+Error: bad character '?' in query
+Error: bad character '+' in query
+Error: bad character '.' in query
+Please input your query:
+Query: non-letters
+Query: numb3rs
+Query: exclamation!
+Query: question?
+Query: MATH+
+Query: etc...
+Error-handling: Querier does not allow non-letter characters.
 ==========================================================
 Basic querier tests on letters at depth 6
 Testing querier on one word
@@ -191,6 +208,26 @@ score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
 score   1 doc   9: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/C.html
 Please input your query:
 Query: start-off 
+Query: graph graph OR fast fourier OR depth computational 
+score   1 doc   5: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/G.html
+score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
+score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
+Please input your query:
+Query: syringotome AND coding 
+score   1 doc   6: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/H.html
+Please input your query:
+Query: thegnly AND depth breadth OR vindications OR transform 
+score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
+score   1 doc   7: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/F.html
+Please input your query:
+Query: breadth traversal AND page algorithm traversal uroscopic 
+No documents match.
+Please input your query:
+Query: expressionful the AND coding OR Walston search 
+score   1 doc   1: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/index.html
+score   1 doc   3: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/B.html
+score   1 doc   8: http://old-www.cs.dartmouth.edu/~cs50/data/tse/letters/D.html
+Please input your query:
 Manually checked that all of the above results produce the expected results
 ==========================================================
 Querier tests on toscrape at depth 0, 1, 2

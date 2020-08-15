@@ -12,6 +12,8 @@ mkdir -p ../querygarbage
 
 echo "Integration testing for querier module."
 echo "PLEASE ensure you have tse-output downloading before running the below script."
+echo "Note that errors were printed to stderr, while normal output was printed to stdout."
+echo "Certain messages may not align for this reason."
 echo "For details on how to download tse-output, please see the general README."
 echo "Please use valgrind to check for memory leaks"
 
@@ -128,6 +130,12 @@ echo "Testing querier on words not in file"
 ./querier ../tse-output/letters-depth-6 ../tse-output/letters-index-6 < MISSING_WORDS
 if [ $? -eq 0 ]; then
     echo >&2 "Error-handling: Querier returns 'No documents match.' for words it cannot find."
+fi
+
+echo "Testing querier on non-letter characters"
+./querier ../tse-output/letters-depth-6 ../tse-output/letters-index-6 < NON_LETTERS
+if [ $? -eq 0 ]; then
+    echo >&2 "Error-handling: Querier does not allow non-letter characters."
 fi
 
 echo "=========================================================="

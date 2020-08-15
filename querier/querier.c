@@ -136,7 +136,7 @@ void process_query(index_t* index, char* pagedir)
         if (!valid_query(words, length)) {
             free(words);
             free(line);
-            break;
+            continue;
         }
 
         run_query(words, index, pagedir);
