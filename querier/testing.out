@@ -41,10 +41,12 @@ Error caught: Directory must be readable
 Testing querier on edge cases for letters at depth 6
 Testing querier on empty query
 Please input your query:
-Query:Error-handling: Querier does nothing and continues on empty query
+Query:
+Error-handling: Querier does nothing and continues on empty query
 Testing querier on whitespace
 Please input your query:
-Query:Error-handling: Querier does nothing and continues on query of only whitespace
+Query:
+Error-handling: Querier does nothing and continues on query of only whitespace
 Testing querier with a starting operator
 Error: 'and' cannot be first
 Please input your query:

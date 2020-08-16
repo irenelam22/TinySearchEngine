@@ -15,7 +15,7 @@
 #define __QUERIER_H
 
 #include <stdio.h>
-#include <stdbool.h>
+#include <stdbool.h> 
 #include "../common/index.h"
 
 // Function prototypes
