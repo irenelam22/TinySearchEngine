@@ -334,6 +334,7 @@ void run_query(char** words, index_t* index, char* pagedir)
     counters_t* final = assertp(counters_new(), "run_query counters failed");
     int i = 0;
     char* word = NULL;
+    bool empty_create = false;
 
     // For each word parsed from stdin
     while ((word = words[i]) != NULL) {
@@ -351,6 +352,10 @@ void run_query(char** words, index_t* index, char* pagedir)
             // Combine the current AND clause into the final counters set
             counters_iterate(temp, final, sum_iterate);
             i+=2;
+
+            if (empty_create) {
+                counters_delete(temp);
+            }
             temp = NULL;
         }
         // Otherwise merge into temporary AND counters set
@@ -363,6 +368,7 @@ void run_query(char** words, index_t* index, char* pagedir)
                 // If the word does not exist in the index, reinitialize temp
                 temp = index_find(index, word);
                 if (temp == NULL) {
+                    empty_create = true;
                     temp = counters_new();
                 }
                 i++;
@@ -378,6 +384,9 @@ void run_query(char** words, index_t* index, char* pagedir)
     }
     if (temp != NULL ) {
         counters_iterate(temp, final, sum_iterate);
+        if (empty_create) {
+            counters_delete(temp);
+        }
     }
     // Print the sorted final set and clean up
     selection_sort(final, pagedir);
