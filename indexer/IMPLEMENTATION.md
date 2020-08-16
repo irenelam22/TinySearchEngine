@@ -7,7 +7,7 @@ The specific data structures are defined in the sections below.
 
 An `indexer` reads the documents in a given `directory` outputted by the crawler (see `Crawler README` for details), builds an inverted index mapping from words to document ID and count, and writes that index to a file.
 
-### crawler
+### indexer
 
 A `indexer` reads files from the given directory, builds an index that maps from words to pages (URLs), and writes that index to a given file.. The `indexer` uses a *hashtable* data structure to store the words, and uses a *counterset* data structure to keep track of the documentID and respective count of the word.
 

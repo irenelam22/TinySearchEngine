@@ -10,15 +10,14 @@ A `querier` reads the index produced by the Indexer (see `Indexer README` for de
 The *querier* module, implemented in `querier.c`, answers search queries from stdin using the following methods:
 
 ```c
-void query_print(void *arg, const int key, const int count);
 bool inputCheck(char* dircopy, char* index);
 int extract_words(char* line, char** words );
 bool valid_query(char** query, int length);
 void process_query(index_t* index, char* pagedir);
 void sum_iterate(void *arg, const int key, const int count);
+int min(const int a, const int b);
 void min_iterate(void *arg, const int key, const int count);
 void run_query(char** words, index_t* index, char* url) ;
-void query_print(void *arg, const int key, const int count);
 void selection_sort(counters_t* set, char* url);
 void findLength(void *arg, const int key, const int count);
 void selection_sort_helper(void *arg, const int key, const int count);
