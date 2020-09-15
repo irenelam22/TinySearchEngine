@@ -1,7 +1,11 @@
-# CS50 Summer 2020, Tiny Search Engine
-## IRENE LAM
+# Tiny Search Engine
 
-GitHub username: irenelam22
+Tiny Search Engine project created for Dartmouth CS50. The project is divided into three components as follows:
+1. Crawler: Crawls through a website and retrieves webpages up until a given `depth`, and extracts the embedded URLs
+2. Indexer: Builds an inverted index from the crawler directory, mapping from words to document ID and count
+3. Querier: Returns webpages based on the user's queries (supports 'and' and 'or' operators)
+
+Please see individual directories for `IMPLEMENTATION` specs and more information.
 
 To build, run `make`.
 
@@ -9,15 +13,4 @@ To test, run `make test`.
 
 To clean up, run `make clean`.
 
-### Other Notes
-
-Crawler:
-I attended TA Celina Tala and TA Katherine Taylor's office hours.
-
-Indexer:
-I attended TA Celina Tala, TA Sudharsan Balasubramani, and TA Arjun Srinivasa's office hours.
-
-Indexer + Querier:
-
-I assume that graders will have downloaded all given crawler and indexer files prior to running `testing.sh` in `tse-output`. Please find the files [here.](http://old-www.cs.dartmouth.edu/~cs50/data/tse-output/)
-
+Build, peruse, and enjoy!
